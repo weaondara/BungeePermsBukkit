@@ -1,4 +1,5 @@
-name: BungeePermsBukkitExtension
-main: net.alpenblock.bungeeperms.bukkitextension.BungeePerms
+name: BungeePermsBukkit
+main: net.alpenblock.bungeeperms.bukkit.BungeePerms
 version: 2.0.0
 author: wea_ondara
+load: startup

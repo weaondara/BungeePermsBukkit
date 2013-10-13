@@ -1,7 +1,10 @@
 package net.alpenblock.bungeeperms.bukkit;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -106,4 +109,45 @@ public class Statics {
 		}
 		return false;
 	}
+    
+    public static <T> T replaceField(Object instance,T var,String varname) 
+    {
+        try 
+        {
+            Field f=instance.getClass().getDeclaredField(varname);
+            f.setAccessible(true);
+            T old=(T) f.get(instance);
+            f.set(instance, var);
+            return old;
+        } 
+        catch (Exception ex) 
+        {
+            return null;
+        }
+    }
+    public static <T> T getField(Object instance,Class<T> type,String varname) 
+    {
+        try 
+        {
+            Field f=instance.getClass().getDeclaredField(varname);
+            f.setAccessible(true);
+            T old=(T) f.get(instance);
+            return old;
+        } 
+        catch (Exception ex) 
+        {
+            return null;
+        }
+    }
+    public static void setField(Object instance,Object var,String varname) 
+    {
+        try 
+        {
+            Field f=instance.getClass().getDeclaredField(varname);
+            f.setAccessible(true);
+            f.set(instance, var);
+        } 
+        catch (Exception ex) 
+        { }
+    }
 }

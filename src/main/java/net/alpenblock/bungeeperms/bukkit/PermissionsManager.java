@@ -240,6 +240,17 @@ public class PermissionsManager implements Listener,PluginMessageListener
 	{
         reloadUser(e.getPlayer().getName());
         
+        //inject permissible
+        Permissible permissible=new Permissible(e.getPlayer());
+        org.bukkit.permissions.Permissible oldpermissible=Injector.inject(e.getPlayer(), permissible);
+        permissible.setOldPermissible(oldpermissible);
+        
+        //add permissions
+        setBukkitPermissions(e.getPlayer());
+	}
+    @EventHandler(priority=EventPriority.LOWEST)
+	public void onJoin(PlayerJoinEvent e)
+	{
         //add permissions
         setBukkitPermissions(e.getPlayer());
         
@@ -250,6 +261,9 @@ public class PermissionsManager implements Listener,PluginMessageListener
 	{
         //remove permissions
         removeBukkitPermissions(e.getPlayer());
+        
+        //uninject permissible
+        Injector.uninject(e.getPlayer());
         
         User u=getUser(e.getPlayer().getName());
         users.remove(u);
