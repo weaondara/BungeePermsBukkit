@@ -1,11 +1,14 @@
 package net.alpenblock.bungeeperms.bukkit.io;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.alpenblock.bungeeperms.bukkit.BungeePerms;
 import net.alpenblock.bungeeperms.bukkit.Config;
 import net.alpenblock.bungeeperms.bukkit.Debug;
@@ -215,6 +218,11 @@ public class MySQLBackEnd implements BackEnd
         
         permsconf.fromResult(res);
         
+        try 
+        {
+            res.close();
+        } catch (Exception ex) { }
+        
         //load group from database
         List<String> inheritances=permsconf.getListString("groups."+group.getName()+".inheritances", new ArrayList<String>());
         List<String> permissions=permsconf.getListString("groups."+group.getName()+".permissions", new ArrayList<String>());
@@ -268,6 +276,11 @@ public class MySQLBackEnd implements BackEnd
         ResultSet res=mysql.returnQuery("SELECT `key`,`value` FROM `"+table+"` WHERE `key` LIKE 'users."+user.getName()+"%'");
         
         permsconf.fromResult(res);
+        
+        try 
+        {
+            res.close();
+        } catch (Exception ex) { }
         
         //load user from database
         List<String> sgroups=permsconf.getListString("users."+user.getName()+".groups", new ArrayList<String>());
