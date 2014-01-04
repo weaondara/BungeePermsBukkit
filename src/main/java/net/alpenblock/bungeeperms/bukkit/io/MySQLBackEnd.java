@@ -1,14 +1,11 @@
 package net.alpenblock.bungeeperms.bukkit.io;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.alpenblock.bungeeperms.bukkit.BungeePerms;
 import net.alpenblock.bungeeperms.bukkit.Config;
 import net.alpenblock.bungeeperms.bukkit.Debug;
@@ -18,7 +15,6 @@ import net.alpenblock.bungeeperms.bukkit.MysqlConfig;
 import net.alpenblock.bungeeperms.bukkit.Server;
 import net.alpenblock.bungeeperms.bukkit.User;
 import net.alpenblock.bungeeperms.bukkit.World;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 public class MySQLBackEnd implements BackEnd
