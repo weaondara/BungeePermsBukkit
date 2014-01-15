@@ -203,6 +203,15 @@ public class PermissionsManager implements Listener,PluginMessageListener
 				return g;
 			}
 		}
+        
+        Group g=backend.loadGroup(groupname);
+        
+        Collections.sort(groups);
+        for(Group gr:groups)
+        {
+            gr.recalcAllPerms();
+        }
+        
 		return null;
 	}
 	public synchronized User getUser(String username)
@@ -544,6 +553,11 @@ public class PermissionsManager implements Listener,PluginMessageListener
     private void reloadUser(String user)
     {
         User u=getUser(user);
+        if(u==null)
+        {
+            debug.log("User "+user+" not found!!!");
+            return;
+        }
         backend.reloadUser(u);
         u.recalcPerms();
         refreshBukkitPermissions(user);
@@ -551,6 +565,11 @@ public class PermissionsManager implements Listener,PluginMessageListener
     private void reloadGroup(String group)
     {
         Group g=getGroup(group);
+        if(g==null)
+        {
+            debug.log("Group "+group+" not found!!!");
+            return;
+        }
         backend.reloadGroup(g);
         Collections.sort(groups);
         for(Group gr:groups)
