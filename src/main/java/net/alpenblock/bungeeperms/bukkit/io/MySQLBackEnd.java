@@ -154,8 +154,66 @@ public class MySQLBackEnd implements BackEnd
         return ret;
     }
     @Override
+    public Group loadGroup(String group)
+    {
+        MysqlConfig permsconf=new MysqlConfig(mysql,table);
+        
+        ResultSet res=mysql.returnQuery("SELECT `key`,`value` FROM `"+table+"` WHERE `key` LIKE 'groups."+group+"%'");
+        
+        permsconf.fromResult(res);
+        
+        if(!permsconf.keyExists("groups."+group))
+        {
+            return null;
+        }
+        
+        List<String> inheritances=permsconf.getListString("groups."+group+".inheritances", new ArrayList<String>());
+        List<String> permissions=permsconf.getListString("groups."+group+".permissions", new ArrayList<String>());
+        boolean isdefault=permsconf.getBoolean("groups."+group+".default",false);
+        int rank=permsconf.getInt("groups."+group+".rank", 1000);
+        String ladder=permsconf.getString("groups."+group+".ladder", "default");
+        String display=permsconf.getString("groups."+group+".display", "");
+        String prefix=permsconf.getString("groups."+group+".prefix", "");
+        String suffix=permsconf.getString("groups."+group+".suffix", "");
+
+        //per server perms
+        Map<String,Server> servers=new HashMap<>();
+        for(String server:permsconf.getSubNodes("groups."+group+".servers"))
+        {
+            List<String> serverperms=permsconf.getListString("groups."+group+".servers."+server+".permissions", new ArrayList<String>());
+            String sdisplay=permsconf.getString("groups."+group+".servers."+server+".display", "");
+            String sprefix=permsconf.getString("groups."+group+".servers."+server+".prefix", "");
+            String ssuffix=permsconf.getString("groups."+group+".servers."+server+".suffix", "");
+
+            //per server world perms
+            Map<String,World> worlds=new HashMap<>();
+            for(String world:permsconf.getSubNodes("groups."+group+".servers."+server+".worlds"))
+            {
+                List<String> worldperms=permsconf.getListString("groups."+group+".servers."+server+".worlds."+world+".permissions", new ArrayList<String>());
+                String wdisplay=permsconf.getString("groups."+group+".servers."+server+".worlds."+world+".display", "");
+                String wprefix=permsconf.getString("groups."+group+".servers."+server+".worlds."+world+".prefix", "");
+                String wsuffix=permsconf.getString("groups."+group+".servers."+server+".worlds."+world+".suffix", "");
+
+                World w=new World(world,worldperms,wdisplay,wprefix,wsuffix);
+                worlds.put(world, w);
+            }
+
+            servers.put(server, new Server(server,serverperms,worlds,sdisplay,sprefix,ssuffix));
+        }
+
+        Group g=new Group(group, inheritances, permissions, servers, rank, ladder, isdefault, display, prefix, suffix);
+        
+        return g;
+    }
+    @Override
     public User loadUser(String user)
     {
+        MysqlConfig permsconf=new MysqlConfig(mysql,table);
+        
+        ResultSet res=mysql.returnQuery("SELECT `key`,`value` FROM `"+table+"` WHERE `key` LIKE 'users."+user+"%'");
+        
+        permsconf.fromResult(res);
+        
         if(!permsconf.keyExists("users."+user))
         {
             return null;
