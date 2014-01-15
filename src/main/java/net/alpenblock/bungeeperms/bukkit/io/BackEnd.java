@@ -15,6 +15,7 @@ public interface BackEnd
     public void load();
     public List<Group> loadGroups();
     public List<User> loadUsers();
+    public Group loadGroup(String group);
     public User loadUser(String user);
     public int loadVersion();
     
@@ -22,6 +23,7 @@ public interface BackEnd
 
     public void reloadGroup(Group group);
     public void reloadUser(User user);
+
 
     
 }
