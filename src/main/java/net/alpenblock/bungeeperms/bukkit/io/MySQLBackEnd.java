@@ -158,7 +158,7 @@ public class MySQLBackEnd implements BackEnd
     {
         MysqlConfig permsconf=new MysqlConfig(mysql,table);
         
-        ResultSet res=mysql.returnQuery("SELECT `key`,`value` FROM `"+table+"` WHERE `key` LIKE 'groups."+group+"%'");
+        ResultSet res=mysql.returnQuery("SELECT `key`,`value` FROM `"+table+"` WHERE `key` LIKE 'groups."+group+"%' ORDER BY id ASC");
         
         permsconf.fromResult(res);
         
@@ -210,7 +210,7 @@ public class MySQLBackEnd implements BackEnd
     {
         MysqlConfig permsconf=new MysqlConfig(mysql,table);
         
-        ResultSet res=mysql.returnQuery("SELECT `key`,`value` FROM `"+table+"` WHERE `key` LIKE 'users."+user+"%'");
+        ResultSet res=mysql.returnQuery("SELECT `key`,`value` FROM `"+table+"` WHERE `key` LIKE 'users."+user+"%' ORDER BY id ASC");
         
         permsconf.fromResult(res);
         
@@ -268,7 +268,7 @@ public class MySQLBackEnd implements BackEnd
     {
         MysqlConfig permsconf=new MysqlConfig(mysql,table);
         
-        ResultSet res=mysql.returnQuery("SELECT `key`,`value` FROM `"+table+"` WHERE `key` LIKE 'groups."+group.getName()+"%'");
+        ResultSet res=mysql.returnQuery("SELECT `key`,`value` FROM `"+table+"` WHERE `key` LIKE 'groups."+group.getName()+"%' ORDER BY id ASC");
         
         permsconf.fromResult(res);
         
@@ -327,7 +327,7 @@ public class MySQLBackEnd implements BackEnd
     {
         MysqlConfig permsconf=new MysqlConfig(mysql,table);
         
-        ResultSet res=mysql.returnQuery("SELECT `key`,`value` FROM `"+table+"` WHERE `key` LIKE 'users."+user.getName()+"%'");
+        ResultSet res=mysql.returnQuery("SELECT `key`,`value` FROM `"+table+"` WHERE `key` LIKE 'users."+user.getName()+"%' ORDER BY id ASC");
         
         permsconf.fromResult(res);
         
