@@ -127,7 +127,7 @@ public class Group implements Comparable<Group>
         List<String> effperms=cachedPerms.get(server+";"+world);
         if(effperms==null)
         {
-            effperms=calcEffectivePerms(server);
+            effperms=calcEffectivePerms(server,world);
             cachedPerms.put(server+";"+world, effperms);
         }
         
