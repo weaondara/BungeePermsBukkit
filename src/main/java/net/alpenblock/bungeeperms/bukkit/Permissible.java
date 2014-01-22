@@ -50,7 +50,9 @@ public class Permissible extends PermissibleBase
 	@Override
 	public boolean hasPermission(String permission) 
     {
-		return BungeePerms.getInstance().getPermissionsManager().hasPermOnServerInWorld(player.getName(), permission, BungeePerms.getInstance().getServerName(), player.getWorld().getName());
+        boolean res=BungeePerms.getInstance().getPermissionsManager().hasPermOnServerInWorld(player.getName(), permission, BungeePerms.getInstance().getServerName(), player.getWorld().getName());
+        //System.out.println(player+" has perm "+permission+"="+res);
+		return res;
 	}
 	@Override
 	public boolean hasPermission(Permission permission)
