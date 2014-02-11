@@ -4,10 +4,6 @@ import java.util.List;
 import net.alpenblock.bungeeperms.bukkit.Group;
 import net.alpenblock.bungeeperms.bukkit.User;
 
-/**
- *
- * @author Alex
- */
 public interface BackEnd
 {
     public BackEndType getType();
@@ -20,10 +16,7 @@ public interface BackEnd
     public int loadVersion();
     
     public boolean isUserInDatabase(User user);
-
+    
     public void reloadGroup(Group group);
     public void reloadUser(User user);
-
-
-    
 }

@@ -6,7 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.alpenblock.bungeeperms.bukkit.io.BackEnd;
+import net.alpenblock.bungeeperms.bukkit.io.BackEndType;
+import net.alpenblock.bungeeperms.bukkit.io.MySQL2BackEnd;
 import net.alpenblock.bungeeperms.bukkit.io.MySQLBackEnd;
+import net.alpenblock.bungeeperms.bukkit.io.YAMLBackEnd;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -59,7 +62,19 @@ public class PermissionsManager implements Listener,PluginMessageListener
 	{
 		server.getLogger().info("[BungeePerms] loading permissions ...");
 		
-        backend=new MySQLBackEnd(server,config,debug);
+        BackEndType bet=config.getEnumValue("backendtype",BackEndType.MySQL);
+        if(bet==BackEndType.YAML)
+        {
+            backend=new YAMLBackEnd(server,plugin);
+        }
+        else if(bet==BackEndType.MySQL)
+        {
+            backend=new MySQLBackEnd(server,config,debug);
+        }
+        else if(bet==BackEndType.MySQL2)
+        {
+            backend=new MySQL2BackEnd(server,config,debug);
+        }
         backend.load();
         
         //load all groups
@@ -70,9 +85,8 @@ public class PermissionsManager implements Listener,PluginMessageListener
         for(Player p:Bukkit.getOnlinePlayers())
         {
             getUser(p.getName());
-            setBukkitPermissions(p);
+//            setBukkitPermissions(p);
         }
-        //users=backend.loadUsers();
         
         //load permsversion
         permsversion=backend.loadVersion();
@@ -255,13 +269,13 @@ public class PermissionsManager implements Listener,PluginMessageListener
         permissible.setOldPermissible(oldpermissible);
         
         //add permissions
-        setBukkitPermissions(e.getPlayer());
+//        setBukkitPermissions(e.getPlayer());
 	}
     @EventHandler(priority=EventPriority.LOWEST)
 	public void onJoin(PlayerJoinEvent e)
 	{
         //add permissions
-        setBukkitPermissions(e.getPlayer());
+//        setBukkitPermissions(e.getPlayer());
         
         sendWorldUpdate(e.getPlayer());
 	}
@@ -269,7 +283,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
 	public void onQuit(PlayerQuitEvent e)
 	{
         //remove permissions
-        removeBukkitPermissions(e.getPlayer());
+//        removeBukkitPermissions(e.getPlayer());
         
         //uninject permissible
         Injector.uninject(e.getPlayer());
@@ -281,7 +295,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
 	public void onChangedWorld(PlayerChangedWorldEvent e)
 	{
         //set new permissions
-        setBukkitPermissions(e.getPlayer());
+//        setBukkitPermissions(e.getPlayer());
         
         sendWorldUpdate(e.getPlayer());
 	}
@@ -439,56 +453,56 @@ public class PermissionsManager implements Listener,PluginMessageListener
     }
     
     //permissions update
-    private void setBukkitPermissions(Player player) 
-    {
-        User user=getUser(player.getName());
-        
-        String permname = "bungeeperms.player." + player.getName();
-        Permission perm = Bukkit.getPluginManager().getPermission(permname);
-        
-        boolean hasPermissionAttachment = player.hasPermission(permname);
-        
-        //a non-existing user must not have any permission
-        if(user==null)
-        {
-            if(hasPermissionAttachment)
-            {
-                Bukkit.getPluginManager().removePermission(permname);
-            }
-            return;
-        }
-        
-        if (perm == null) 
-        {
-            perm = new Permission(permname, PermissionDefault.FALSE, listToMap(user.getEffectivePerms(BungeePerms.getInstance().getServerName(),player.getWorld().getName())));
-            Bukkit.getPluginManager().addPermission(perm);
-        }
-        else 
-        {
-            perm.getChildren().clear();
-            perm.getChildren().putAll(listToMap(user.getEffectivePerms(BungeePerms.getInstance().getServerName(),player.getWorld().getName())));
-        }
-
-        perm.recalculatePermissibles();
-
-        if (!hasPermissionAttachment) 
-        {
-            player.addAttachment(BungeePerms.getInstance(), perm.getName(), true);
-        }
-    }
-    private void removeBukkitPermissions(Player player) 
-    {
-        String permname = "bungeeperms.player." + player.getName();
-        Bukkit.getPluginManager().removePermission(permname);
-    }
-    public void refreshBukkitPermissions(String player) 
-    {
-        Player p = Bukkit.getPlayerExact(player);
-        if (p != null) 
-        {
-            setBukkitPermissions(p);
-        }
-    }
+//    private void setBukkitPermissions(Player player) 
+//    {
+//        User user=getUser(player.getName());
+//        
+//        String permname = "bungeeperms.player." + player.getName();
+//        Permission perm = Bukkit.getPluginManager().getPermission(permname);
+//        
+//        boolean hasPermissionAttachment = player.hasPermission(permname);
+//        
+//        //a non-existing user must not have any permission
+//        if(user==null)
+//        {
+//            if(hasPermissionAttachment)
+//            {
+//                Bukkit.getPluginManager().removePermission(permname);
+//            }
+//            return;
+//        }
+//        
+//        if (perm == null) 
+//        {
+//            perm = new Permission(permname, PermissionDefault.FALSE, listToMap(user.getEffectivePerms(BungeePerms.getInstance().getServerName(),player.getWorld().getName())));
+//            Bukkit.getPluginManager().addPermission(perm);
+//        }
+//        else 
+//        {
+//            perm.getChildren().clear();
+//            perm.getChildren().putAll(listToMap(user.getEffectivePerms(BungeePerms.getInstance().getServerName(),player.getWorld().getName())));
+//        }
+//
+//        perm.recalculatePermissibles();
+//
+//        if (!hasPermissionAttachment) 
+//        {
+//            player.addAttachment(BungeePerms.getInstance(), perm.getName(), true);
+//        }
+//    }
+//    private void removeBukkitPermissions(Player player) 
+//    {
+//        String permname = "bungeeperms.player." + player.getName();
+//        Bukkit.getPluginManager().removePermission(permname);
+//    }
+//    public void refreshBukkitPermissions(String player) 
+//    {
+//        Player p = Bukkit.getPlayerExact(player);
+//        if (p != null) 
+//        {
+//            setBukkitPermissions(p);
+//        }
+//    }
     
     private Map<String,Boolean> listToMap(List<String> list)
     {
@@ -529,7 +543,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
             User u=getUser(userorgroup);
             users.remove(u);
             
-            refreshBukkitPermissions(userorgroup);
+//            refreshBukkitPermissions(userorgroup);
         }
         else if(cmd.equalsIgnoreCase("deletegroup"))
         {
@@ -560,7 +574,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
         }
         backend.reloadUser(u);
         u.recalcPerms();
-        refreshBukkitPermissions(user);
+//        refreshBukkitPermissions(user);
     }
     private void reloadGroup(String group)
     {
@@ -583,7 +597,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
             {
                 u.recalcPerms();
             }
-            setBukkitPermissions(p);
+//            setBukkitPermissions(p);
         }
     }
 }
