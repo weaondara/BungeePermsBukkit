@@ -141,7 +141,7 @@ public class Group implements Comparable<Group>
 		{
 			if(inheritances.contains(g.getName()))
 			{
-				List<String> gperms=g.getPerms();
+				List<String> gperms=g.getEffectivePerms();
 				for(String perm:gperms)
 				{
 					boolean added=false;
@@ -209,7 +209,7 @@ public class Group implements Comparable<Group>
 		{
 			if(inheritances.contains(g.getName()))
 			{
-				List<String> gperms=g.getPerms();
+				List<String> gperms=g.getEffectivePerms(server);
 				for(String perm:gperms)
 				{
 					boolean added=false;
@@ -241,40 +241,40 @@ public class Group implements Comparable<Group>
 			}
 			
 			//per server perms
-            Server srv=g.getServers().get(server);
-			if(srv==null)
-			{
-				srv=new Server(server,new ArrayList<String>(),new HashMap<String,World>(),"","","");
-			}
-			List<String> serverperms=srv.getPerms();
-			for(String perm:serverperms)
-			{
-				boolean added=false;
-				for(int i=0;i<ret.size();i++)
-				{
-					if(ret.get(i).equalsIgnoreCase(perm))
-					{
-						added=true;
-						break;
-					}
-					else if(ret.get(i).equalsIgnoreCase("-"+perm))
-					{
-						ret.set(i,perm);
-						added=true;
-						break;
-					}
-					else if(perm.equalsIgnoreCase("-"+ret.get(i)))
-					{
-						ret.remove(i);
-						added=true;
-						break;
-					}
-				}
-				if(!added)
-				{
-					ret.add(perm);
-				}
-			}
+//            Server srv=g.getServers().get(server);
+//			if(srv==null)
+//			{
+//				srv=new Server(server,new ArrayList<String>(),new HashMap<String,World>(),"","","");
+//			}
+//			List<String> serverperms=srv.getPerms();
+//			for(String perm:serverperms)
+//			{
+//				boolean added=false;
+//				for(int i=0;i<ret.size();i++)
+//				{
+//					if(ret.get(i).equalsIgnoreCase(perm))
+//					{
+//						added=true;
+//						break;
+//					}
+//					else if(ret.get(i).equalsIgnoreCase("-"+perm))
+//					{
+//						ret.set(i,perm);
+//						added=true;
+//						break;
+//					}
+//					else if(perm.equalsIgnoreCase("-"+ret.get(i)))
+//					{
+//						ret.remove(i);
+//						added=true;
+//						break;
+//					}
+//				}
+//				if(!added)
+//				{
+//					ret.add(perm);
+//				}
+//			}
 		}
 		
 		for(String s:perms)
@@ -351,7 +351,7 @@ public class Group implements Comparable<Group>
 		{
 			if(inheritances.contains(g.getName()))
 			{
-				for(String perm:g.getPerms())
+				for(String perm:g.getEffectivePerms(server,world))
 				{
 					boolean added=false;
 					for(int i=0;i<ret.size();i++)
@@ -381,75 +381,75 @@ public class Group implements Comparable<Group>
 				}
 			
                 //per server perms
-                Server srv=g.getServers().get(server);
-                if(srv==null)
-                {
-                    srv=new Server(server,new ArrayList<String>(),new HashMap<String,World>(),"","","");
-                }
-                List<String> serverperms=srv.getPerms();
-                for(String perm:serverperms)
-                {
-                    boolean added=false;
-                    for(int i=0;i<ret.size();i++)
-                    {
-                        if(ret.get(i).equalsIgnoreCase(perm))
-                        {
-                            added=true;
-                            break;
-                        }
-                        else if(ret.get(i).equalsIgnoreCase("-"+perm))
-                        {
-                            ret.set(i,perm);
-                            added=true;
-                            break;
-                        }
-                        else if(perm.equalsIgnoreCase("-"+ret.get(i)))
-                        {
-                            ret.remove(i);
-                            added=true;
-                            break;
-                        }
-                    }
-                    if(!added)
-                    {
-                        ret.add(perm);
-                    }
-                }
-                //per server world perms
-                World w=srv.getWorlds().get(world);
-                if(w==null)
-                {
-                    w=new World(server,new ArrayList<String>(),"","","");
-                }
-                List<String> serverworldperms=w.getPerms();
-                for(String perm:serverworldperms)
-                {
-                    boolean added=false;
-                    for(int i=0;i<ret.size();i++)
-                    {
-                        if(ret.get(i).equalsIgnoreCase(perm))
-                        {
-                            added=true;
-                            break;
-                        }
-                        else if(ret.get(i).equalsIgnoreCase("-"+perm))
-                        {
-                            ret.set(i,perm);
-                            added=true;
-                            break;
-                        }
-                        else if(perm.equalsIgnoreCase("-"+ret.get(i)))
-                        {
-                            ret.remove(i);
-                            added=true;
-                            break;
-                        }
-                    }
-                    if(!added)
-                    {
-                        ret.add(perm);
-                    }
-                }
+//                Server srv=g.getServers().get(server);
+//                if(srv==null)
+//                {
+//                    srv=new Server(server,new ArrayList<String>(),new HashMap<String,World>(),"","","");
+//                }
+//                List<String> serverperms=srv.getPerms();
+//                for(String perm:serverperms)
+//                {
+//                    boolean added=false;
+//                    for(int i=0;i<ret.size();i++)
+//                    {
+//                        if(ret.get(i).equalsIgnoreCase(perm))
+//                        {
+//                            added=true;
+//                            break;
+//                        }
+//                        else if(ret.get(i).equalsIgnoreCase("-"+perm))
+//                        {
+//                            ret.set(i,perm);
+//                            added=true;
+//                            break;
+//                        }
+//                        else if(perm.equalsIgnoreCase("-"+ret.get(i)))
+//                        {
+//                            ret.remove(i);
+//                            added=true;
+//                            break;
+//                        }
+//                    }
+//                    if(!added)
+//                    {
+//                        ret.add(perm);
+//                    }
+//                }
+//                //per server world perms
+//                World w=srv.getWorlds().get(world);
+//                if(w==null)
+//                {
+//                    w=new World(server,new ArrayList<String>(),"","","");
+//                }
+//                List<String> serverworldperms=w.getPerms();
+//                for(String perm:serverworldperms)
+//                {
+//                    boolean added=false;
+//                    for(int i=0;i<ret.size();i++)
+//                    {
+//                        if(ret.get(i).equalsIgnoreCase(perm))
+//                        {
+//                            added=true;
+//                            break;
+//                        }
+//                        else if(ret.get(i).equalsIgnoreCase("-"+perm))
+//                        {
+//                            ret.set(i,perm);
+//                            added=true;
+//                            break;
+//                        }
+//                        else if(perm.equalsIgnoreCase("-"+ret.get(i)))
+//                        {
+//                            ret.remove(i);
+//                            added=true;
+//                            break;
+//                        }
+//                    }
+//                    if(!added)
+//                    {
+//                        ret.add(perm);
+//                    }
+//                }
             }
 		}
 		
@@ -786,26 +786,6 @@ public class Group implements Comparable<Group>
         cachedPerms.put(server+";"+world, effperms);
     }
 
-    public synchronized void recalcAllPerms() 
-    {
-        for(String server:cachedPerms.keySet())
-        {
-            if(server.equalsIgnoreCase("global"))
-            {
-                recalcPerms();
-            }
-            else if(!server.contains(";"))
-            {
-                recalcPerms(server);
-            }
-            else
-            {
-                List<String> l=Statics.toList(server, ";");
-                recalcPerms(l.get(0),l.get(1));
-            }
-        }
-    }
-    
     @Override
     public int compareTo(Group g)
     {

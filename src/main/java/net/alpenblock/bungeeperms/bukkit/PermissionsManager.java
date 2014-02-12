@@ -223,7 +223,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
         Collections.sort(groups);
         for(Group gr:groups)
         {
-            gr.recalcAllPerms();
+            gr.recalcPerms();
         }
         
 		return null;
@@ -543,15 +543,20 @@ public class PermissionsManager implements Listener,PluginMessageListener
             User u=getUser(userorgroup);
             users.remove(u);
             
-            refreshBukkitPermissions(userorgroup);
+            //refreshBukkitPermissions(userorgroup);
         }
         else if(cmd.equalsIgnoreCase("deletegroup"))
         {
             Group g=getGroup(userorgroup);
             groups.remove(g);
-            for(Player p:server.getOnlinePlayers())
+            for(Group gr:groups)
             {
-                reloadUser(userorgroup);
+                gr.recalcPerms();
+            }
+            for(User u:users)
+            {
+                u.recalcPerms();
+                //setBukkitPermissions(p);
             }
         }
         else if(cmd.equalsIgnoreCase("reloaduser"))
@@ -561,6 +566,14 @@ public class PermissionsManager implements Listener,PluginMessageListener
         else if(cmd.equalsIgnoreCase("reloadgroup"))
         {
             reloadGroup(userorgroup);
+        }
+        else if(cmd.equalsIgnoreCase("reloadusers"))
+        {
+            reloadUsers();
+        }
+        else if(cmd.equalsIgnoreCase("reloadgroups"))
+        {
+            reloadGroups();
         }
     }
     
@@ -574,7 +587,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
         }
         backend.reloadUser(u);
         u.recalcPerms();
-        refreshBukkitPermissions(user);
+        //refreshBukkitPermissions(user);
     }
     private void reloadGroup(String group)
     {
@@ -588,16 +601,36 @@ public class PermissionsManager implements Listener,PluginMessageListener
         Collections.sort(groups);
         for(Group gr:groups)
         {
-            gr.recalcAllPerms();
+            gr.recalcPerms();
         }
-        for(Player p:server.getOnlinePlayers())
+        for(User u:users)
         {
-            User u=getUser(p.getName());
-            if(u!=null)
-            {
-                u.recalcPerms();
-            }
-            setBukkitPermissions(p);
+            u.recalcPerms();
+            //setBukkitPermissions(p);
+        }
+    }
+    private void reloadUsers()
+    {
+        for(User u:users)
+        {
+            backend.reloadUser(u);
+            u.recalcPerms();
+        }
+    }
+    private void reloadGroups()
+    {
+        for(Group g:groups)
+        {
+            backend.reloadGroup(g);
+        }
+        Collections.sort(groups);
+        for(Group g:groups)
+        {
+            g.recalcPerms();
+        }
+        for(User u:users)
+        {
+            u.recalcPerms();
         }
     }
 }
