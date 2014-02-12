@@ -72,109 +72,7 @@ public class MySQL2BackEnd implements BackEnd
         List<String> groups=adapter.getGroups();
 		for(String g:groups)
 		{
-            MysqlPermEntity mpe = adapter.getGroup(g);
-			List<String> inheritances=getValue(mpe.getData("inheritances"));
-			boolean isdefault=getFirstValue(mpe.getData("default"),false);
-			int rank=getFirstValue(mpe.getData("rank"), 1000);
-			String ladder=getFirstValue(mpe.getData("ladder"), "default");
-			String display=getFirstValue(mpe.getData("display"), "");
-			String prefix=getFirstValue(mpe.getData("prefix"), "");
-			String suffix=getFirstValue(mpe.getData("suffix"), "");
-            
-            //perms
-            List<ValueEntry> permdata = mpe.getData("permissions");
-            List<String> globalperms=new ArrayList<>();
-            List<String> foundservers=new ArrayList<>();
-            
-            //globalperms
-            for(ValueEntry e:permdata)
-            {
-                //check for servers 
-                if(e.getServer()!=null)
-                {
-                    if(!foundservers.contains(e.getServer().toLowerCase()))
-                    {
-                        foundservers.add(e.getServer().toLowerCase());
-                    }
-                }
-                
-                //is global perm
-                else
-                {
-                    globalperms.add(e.getValue());
-                }
-            }
-            
-            //server perms
-            Map<String,Server> servers=new HashMap<>();
-            for(String server:foundservers)
-            {
-                List<String> serverperms=new ArrayList<>();
-                List<String> foundworlds=new ArrayList<>();
-                for(ValueEntry e:permdata)
-                {
-                    if(e.getServer()!=null && e.getServer().equalsIgnoreCase(server))
-                    {
-                        //check for worlds 
-                        if(e.getWorld()!=null)
-                        {
-                            if(!foundworlds.contains(e.getWorld().toLowerCase()))
-                            {
-                                foundworlds.add(e.getWorld().toLowerCase());
-                            }
-                        }
-
-                        //is server perm
-                        else
-                        {
-                            serverperms.add(e.getValue());
-                        }
-                    }
-                }
-                
-                //world perms
-                Map<String,World> worlds=new HashMap<>();
-                for(String world:foundservers)
-                {
-                    List<String> worldperms=new ArrayList<>();
-                    for(ValueEntry e:permdata)
-                    {
-                        if(e.getServer()!=null && e.getServer().equalsIgnoreCase(server) && e.getWorld()!=null && e.getWorld().equalsIgnoreCase(world))
-                        {
-                            worldperms.add(e.getValue());
-                        }
-                    }
-                    
-                    World w=new World(world.toLowerCase(),worldperms,null,null,null);
-                    worlds.put(world.toLowerCase(), w);
-                }
-                
-                Server s=new Server(server,serverperms,worlds,null,null,null);
-                servers.put(server.toLowerCase(),s);
-            }
-            
-            // display props for servers and worlds
-            for(Map.Entry<String, Server> server:servers.entrySet())
-            {
-                String sdisplay=getFirstValue(mpe.getData("display"), server.getKey(), "");
-                String sprefix=getFirstValue(mpe.getData("prefix"), server.getKey(), "");
-                String ssuffix=getFirstValue(mpe.getData("suffix"), server.getKey(), "");
-                server.getValue().setDisplay(sdisplay);
-                server.getValue().setPrefix(sprefix);
-                server.getValue().setSuffix(ssuffix);
-                
-                for(Map.Entry<String, World> world:server.getValue().getWorlds().entrySet())
-                {
-                    String wdisplay=getFirstValue(mpe.getData("display"), server.getKey(), world.getKey(), "");
-                    String wprefix=getFirstValue(mpe.getData("prefix"), server.getKey(), world.getKey(), "");
-                    String wsuffix=getFirstValue(mpe.getData("suffix"), server.getKey(), world.getKey(), "");
-                    world.getValue().setDisplay(wdisplay);
-                    world.getValue().setPrefix(wprefix);
-                    world.getValue().setSuffix(wsuffix);
-                }
-            }
-			
-			Group group=new Group(g, inheritances, globalperms, servers, rank, ladder, isdefault, display, prefix, suffix);
+            Group group=loadGroup(g);
 			ret.add(group);
 		}
         Collections.sort(ret);
@@ -209,6 +107,10 @@ public class MySQL2BackEnd implements BackEnd
 
         //perms
         List<ValueEntry> permdata = mpe.getData("permissions");
+        if(permdata==null)
+        {
+            permdata=new ArrayList<>();
+        }
         List<String> globalperms=new ArrayList<>();
         List<String> foundservers=new ArrayList<>();
 
@@ -321,6 +223,10 @@ public class MySQL2BackEnd implements BackEnd
 
         //perms
         List<ValueEntry> permdata = mpe.getData("permissions");
+        if(permdata==null)
+        {
+            permdata=new ArrayList<>();
+        }
         List<String> globalperms=new ArrayList<>();
         Map<String,List<String>> serverperms=new HashMap<>();
         Map<String,Map<String,List<String>>> serverworldperms=new HashMap<>();
@@ -379,6 +285,10 @@ public class MySQL2BackEnd implements BackEnd
     //helper functions
     private List<String> getValue(List<ValueEntry> values)
     {
+        if(values==null)
+        {
+            return new ArrayList<>();
+        }
         List<String> ret=new ArrayList<>();
         for(ValueEntry e:values)
         {
@@ -479,6 +389,10 @@ public class MySQL2BackEnd implements BackEnd
 
         //perms
         List<ValueEntry> permdata = mpe.getData("permissions");
+        if(permdata==null)
+        {
+            permdata=new ArrayList<>();
+        }
         List<String> globalperms=new ArrayList<>();
         List<String> foundservers=new ArrayList<>();
 
@@ -598,6 +512,10 @@ public class MySQL2BackEnd implements BackEnd
 
         //perms
         List<ValueEntry> permdata = mpe.getData("permissions");
+        if(permdata==null)
+        {
+            permdata=new ArrayList<>();
+        }
         List<String> globalperms=new ArrayList<>();
         Map<String,List<String>> serverperms=new HashMap<>();
         Map<String,Map<String,List<String>>> serverworldperms=new HashMap<>();
