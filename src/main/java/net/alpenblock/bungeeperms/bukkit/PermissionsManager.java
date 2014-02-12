@@ -85,7 +85,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
         for(Player p:Bukkit.getOnlinePlayers())
         {
             getUser(p.getName());
-//            setBukkitPermissions(p);
+            setBukkitPermissions(p);
         }
         
         //load permsversion
@@ -269,13 +269,13 @@ public class PermissionsManager implements Listener,PluginMessageListener
         permissible.setOldPermissible(oldpermissible);
         
         //add permissions
-//        setBukkitPermissions(e.getPlayer());
+        setBukkitPermissions(e.getPlayer());
 	}
     @EventHandler(priority=EventPriority.LOWEST)
 	public void onJoin(PlayerJoinEvent e)
 	{
         //add permissions
-//        setBukkitPermissions(e.getPlayer());
+        setBukkitPermissions(e.getPlayer());
         
         sendWorldUpdate(e.getPlayer());
 	}
@@ -283,7 +283,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
 	public void onQuit(PlayerQuitEvent e)
 	{
         //remove permissions
-//        removeBukkitPermissions(e.getPlayer());
+        removeBukkitPermissions(e.getPlayer());
         
         //uninject permissible
         Injector.uninject(e.getPlayer());
@@ -295,7 +295,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
 	public void onChangedWorld(PlayerChangedWorldEvent e)
 	{
         //set new permissions
-//        setBukkitPermissions(e.getPlayer());
+        setBukkitPermissions(e.getPlayer());
         
         sendWorldUpdate(e.getPlayer());
 	}
@@ -453,8 +453,8 @@ public class PermissionsManager implements Listener,PluginMessageListener
     }
     
     //permissions update
-//    private void setBukkitPermissions(Player player) 
-//    {
+    private void setBukkitPermissions(Player player) 
+    {
 //        User user=getUser(player.getName());
 //        
 //        String permname = "bungeeperms.player." + player.getName();
@@ -489,20 +489,20 @@ public class PermissionsManager implements Listener,PluginMessageListener
 //        {
 //            player.addAttachment(BungeePerms.getInstance(), perm.getName(), true);
 //        }
-//    }
-//    private void removeBukkitPermissions(Player player) 
-//    {
+    }
+    private void removeBukkitPermissions(Player player) 
+    {
 //        String permname = "bungeeperms.player." + player.getName();
 //        Bukkit.getPluginManager().removePermission(permname);
-//    }
-//    public void refreshBukkitPermissions(String player) 
-//    {
+    }
+    public void refreshBukkitPermissions(String player) 
+    {
 //        Player p = Bukkit.getPlayerExact(player);
 //        if (p != null) 
 //        {
 //            setBukkitPermissions(p);
 //        }
-//    }
+    }
     
     private Map<String,Boolean> listToMap(List<String> list)
     {
@@ -543,7 +543,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
             User u=getUser(userorgroup);
             users.remove(u);
             
-//            refreshBukkitPermissions(userorgroup);
+            refreshBukkitPermissions(userorgroup);
         }
         else if(cmd.equalsIgnoreCase("deletegroup"))
         {
@@ -574,7 +574,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
         }
         backend.reloadUser(u);
         u.recalcPerms();
-//        refreshBukkitPermissions(user);
+        refreshBukkitPermissions(user);
     }
     private void reloadGroup(String group)
     {
@@ -597,7 +597,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
             {
                 u.recalcPerms();
             }
-//            setBukkitPermissions(p);
+            setBukkitPermissions(p);
         }
     }
 }
