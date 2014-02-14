@@ -504,23 +504,6 @@ public class PermissionsManager implements Listener,PluginMessageListener
 //        }
     }
     
-    private Map<String,Boolean> listToMap(List<String> list)
-    {
-        Map<String,Boolean> ret=new HashMap<>();
-        for(String s:list)
-        {
-            if(s.startsWith("-"))
-            {
-                ret.put(s.substring(1), false);
-            }
-            else
-            {
-                ret.put(s, true);
-            }
-        }
-        return ret;
-    }
-    
     //for bungeecord per-server-and-world perms
     private void sendWorldUpdate(Player p)
     {
@@ -574,6 +557,11 @@ public class PermissionsManager implements Listener,PluginMessageListener
         else if(cmd.equalsIgnoreCase("reloadgroups"))
         {
             reloadGroups();
+        }
+        else if(cmd.equalsIgnoreCase("reloadall"))
+        {
+            config.load();
+            loadPerms();
         }
     }
     
