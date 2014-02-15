@@ -2,9 +2,7 @@ package net.alpenblock.bungeeperms.bukkit;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import net.alpenblock.bungeeperms.bukkit.io.BackEnd;
 import net.alpenblock.bungeeperms.bukkit.io.BackEndType;
 import net.alpenblock.bungeeperms.bukkit.io.MySQL2BackEnd;
@@ -22,8 +20,6 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
