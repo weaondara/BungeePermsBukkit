@@ -515,7 +515,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
         debug.log("msg="+msg);
         
         String cmd=data.get(0);
-        String userorgroup=data.get(1);
+        String userorgroup=data.size()>1?data.get(1):null;
         
         if(cmd.equalsIgnoreCase("deleteuser"))
         {
