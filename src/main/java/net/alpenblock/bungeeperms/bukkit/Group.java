@@ -113,22 +113,22 @@ public class Group implements Comparable<Group>
     }
     public List<String> getEffectivePerms(String server) 
 	{
-        List<String> effperms=cachedPerms.get(server);
+        List<String> effperms=cachedPerms.get(server.toLowerCase());
         if(effperms==null)
         {
             effperms=calcEffectivePerms(server);
-            cachedPerms.put(server, effperms);
+            cachedPerms.put(server.toLowerCase(), effperms);
         }
         
         return effperms;
     }
     public List<String> getEffectivePerms(String server,String world) 
 	{
-        List<String> effperms=cachedPerms.get(server+";"+world);
+        List<String> effperms=cachedPerms.get(server.toLowerCase()+";"+world.toLowerCase());
         if(effperms==null)
         {
             effperms=calcEffectivePerms(server,world);
-            cachedPerms.put(server+";"+world, effperms);
+            cachedPerms.put(server.toLowerCase()+";"+world.toLowerCase(), effperms);
         }
         
         return effperms;
@@ -307,10 +307,10 @@ public class Group implements Comparable<Group>
 		}
 		
 		//per server perms
-        Server srv=servers.get(server);
+        Server srv=servers.get(server.toLowerCase());
         if(srv==null)
         {
-            srv=new Server(server,new ArrayList<String>(),new HashMap<String,World>(),"","","");
+            srv=new Server(server.toLowerCase(),new ArrayList<String>(),new HashMap<String,World>(),"","","");
         }
         List<String> perserverperms=srv.getPerms();
 		for(String perm:perserverperms)
@@ -483,10 +483,10 @@ public class Group implements Comparable<Group>
 		}
 		
 		//per server perms
-        Server srv=servers.get(server);
+        Server srv=servers.get(server.toLowerCase());
         if(srv==null)
         {
-            srv=new Server(server,new ArrayList<String>(),new HashMap<String,World>(),"","","");
+            srv=new Server(server.toLowerCase(),new ArrayList<String>(),new HashMap<String,World>(),"","","");
         }
         List<String> perserverperms=srv.getPerms();
 		for(String perm:perserverperms)
@@ -519,10 +519,10 @@ public class Group implements Comparable<Group>
 		}
         
         //per server world perms
-        World w=srv.getWorlds().get(world);
+        World w=srv.getWorlds().get(world.toLowerCase());
         if(w==null)
         {
-            w=new World(server,new ArrayList<String>(),"","","");
+            w=new World(world.toLowerCase(),new ArrayList<String>(),"","","");
         }
         List<String> serverworldperms=w.getPerms();
         for(String perm:serverworldperms)
@@ -746,7 +746,7 @@ public class Group implements Comparable<Group>
                 else
                 {
                     List<String> effperms=calcEffectivePerms(server);
-                    cachedPerms.put(server, effperms);
+                    cachedPerms.put(server.toLowerCase(), effperms);
                 }
             }
             else if(l.size()==2)
@@ -770,7 +770,7 @@ public class Group implements Comparable<Group>
                 if(l.size()==1)
                 {
                     List<String> effperms=calcEffectivePerms(server);
-                    cachedPerms.put(server, effperms);
+                    cachedPerms.put(server.toLowerCase(), effperms);
                 }
                 else if(l.size()==2)
                 {
@@ -783,7 +783,7 @@ public class Group implements Comparable<Group>
     public void recalcPerms(String server,String world)
     {
         List<String> effperms=calcEffectivePerms(server,world);
-        cachedPerms.put(server+";"+world, effperms);
+        cachedPerms.put(server.toLowerCase()+";"+world.toLowerCase(), effperms);
     }
 
     @Override

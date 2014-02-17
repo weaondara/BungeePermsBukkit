@@ -240,22 +240,22 @@ public class User
     }
     public List<String> getEffectivePerms(String server) 
 	{
-        List<String> effperms=cachedPerms.get(server);
+        List<String> effperms=cachedPerms.get(server.toLowerCase());
         if(effperms==null)
         {
             effperms=calcEffectivePerms(server);
-            cachedPerms.put(server, effperms);
+            cachedPerms.put(server.toLowerCase(), effperms);
         }
         
         return effperms;
     }
     public List<String> getEffectivePerms(String server, String world) 
 	{
-        List<String> effperms=cachedPerms.get(server+";"+world);
+        List<String> effperms=cachedPerms.get(server.toLowerCase()+";"+world.toLowerCase());
         if(effperms==null)
         {
             effperms=calcEffectivePerms(server,world);
-            cachedPerms.put(server+";"+world, effperms);
+            cachedPerms.put(server.toLowerCase()+";"+world.toLowerCase(), effperms);
         }
         
         return effperms;
@@ -429,7 +429,7 @@ public class User
 		}
 		
 		//per server perms
-		List<String> perserverperms=serverperms.get(server);
+		List<String> perserverperms=serverperms.get(server.toLowerCase());
 		if(perserverperms==null)
 		{
 			perserverperms=new ArrayList<>();
@@ -604,7 +604,7 @@ public class User
 		}
 		
 		//per server perms
-		List<String> perserverperms=serverperms.get(server);
+		List<String> perserverperms=serverperms.get(server.toLowerCase());
 		if(perserverperms==null)
 		{
 			perserverperms=new ArrayList<>();
@@ -639,12 +639,12 @@ public class User
 		}
         
         //per server world perms
-        Map<String,List<String>> serverperms=serverworldperms.get(world);
+        Map<String,List<String>> serverperms=serverworldperms.get(server.toLowerCase());
         if(serverperms==null)
         {
             serverperms=new HashMap<>();
         }
-        List<String> serverworldperms=serverperms.get(world);
+        List<String> serverworldperms=serverperms.get(world.toLowerCase());
         if(serverworldperms==null)
         {
             serverworldperms=new ArrayList<>();
@@ -698,7 +698,7 @@ public class User
                 else
                 {
                     List<String> effperms=calcEffectivePerms(server);
-                    cachedPerms.put(server, effperms);
+                    cachedPerms.put(server.toLowerCase(), effperms);
                 }
             }
             else if(l.size()==2)
@@ -722,7 +722,7 @@ public class User
                 if(l.size()==1)
                 {
                     List<String> effperms=calcEffectivePerms(server);
-                    cachedPerms.put(server, effperms);
+                    cachedPerms.put(server.toLowerCase(), effperms);
                 }
                 else if(l.size()==2)
                 {
@@ -735,7 +735,7 @@ public class User
     public void recalcPerms(String server,String world)
     {
         List<String> effperms=calcEffectivePerms(server,world);
-        cachedPerms.put(server+";"+world, effperms);
+        cachedPerms.put(server.toLowerCase()+";"+world.toLowerCase(), effperms);
     }
     
     public boolean isNothingSpecial() 
