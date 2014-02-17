@@ -533,7 +533,7 @@ public class MySQL2BackEnd implements BackEnd
         {
             if(e.getServer()==null)
             {
-                globalperms.add(e.getServer());
+                globalperms.add(e.getValue());
             }
             else if(e.getWorld()==null)
             {
