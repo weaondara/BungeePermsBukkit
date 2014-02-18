@@ -55,7 +55,7 @@ public class MySQL2BackEnd implements BackEnd
     @Override
     public BackEndType getType()
     {
-        return BackEndType.MySQL;
+        return BackEndType.MySQL2;
     }
     
     @Override
