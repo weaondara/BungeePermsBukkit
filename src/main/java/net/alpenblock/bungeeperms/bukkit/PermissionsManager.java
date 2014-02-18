@@ -251,7 +251,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
 	}
 	public List<User> getUsers()
 	{
-		return Collections.unmodifiableList(getUsers());
+		return Collections.unmodifiableList(users);
 	}
 	
 	@EventHandler(priority=EventPriority.LOWEST)
