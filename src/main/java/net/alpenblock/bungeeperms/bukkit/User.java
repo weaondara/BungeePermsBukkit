@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.bukkit.Bukkit;
 
 public class User
 {
@@ -59,6 +60,13 @@ public class User
 	
 	public boolean hasPerm(String perm)
 	{
+        //check op
+        if(BungeePerms.getInstance().isAllowOps() && Bukkit.getOfflinePlayer(name).isOp())
+        {
+            return true;
+        }
+        
+        //normal perms resolving
 		List<String> perms=getEffectivePerms();
 		boolean has=false;
 		for(String p:perms)
@@ -116,6 +124,12 @@ public class User
 	}
 	public boolean hasPermOnServer(String perm, String server) 
 	{
+        //check op
+        if(BungeePerms.getInstance().isAllowOps() && Bukkit.getOfflinePlayer(name).isOp())
+        {
+            return true;
+        }
+        
 		List<String> perms=getEffectivePerms(server);
 		boolean has=false;
 		for(String p:perms)
@@ -172,6 +186,12 @@ public class User
 	}
     public boolean hasPermOnServerInWorld(String perm, String server, String world) 
 	{
+        //check op
+        if(BungeePerms.getInstance().isAllowOps() && Bukkit.getOfflinePlayer(name).isOp())
+        {
+            return true;
+        }
+        
 		List<String> perms=getEffectivePerms(server,world);
 		boolean has=false;
 		for(String p:perms)

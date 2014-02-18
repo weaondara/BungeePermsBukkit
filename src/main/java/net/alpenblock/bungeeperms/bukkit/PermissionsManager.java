@@ -557,6 +557,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
         else if(cmd.equalsIgnoreCase("reloadall"))
         {
             config.load();
+            BungeePerms.getInstance().loadConfig();
             loadPerms();
         }
     }

@@ -18,6 +18,7 @@ public class BungeePerms extends JavaPlugin
 	private PermissionsManager pm;
     
     private String servername;
+    private boolean allowops;
 	
 	@Override
 	public void onLoad()
@@ -34,9 +35,10 @@ public class BungeePerms extends JavaPlugin
         
 		pm=new PermissionsManager(this,config,debug);
 	}
-	private void loadConfig()
+	public void loadConfig()
     {
         servername=config.getString("servername", "servername");
+        allowops=config.getBoolean("allowops", false);
     }
 	@Override
 	public void onEnable()
@@ -59,5 +61,9 @@ public class BungeePerms extends JavaPlugin
     public String getServerName()
     {
         return servername;
+    }
+    public boolean isAllowOps()
+    {
+        return allowops;
     }
 }
