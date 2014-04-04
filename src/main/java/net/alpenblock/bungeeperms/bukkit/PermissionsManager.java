@@ -128,7 +128,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
 		Group ret=player.getGroups().get(0);
 		for(int i=1;i<player.getGroups().size();i++)
 		{
-			if(player.getGroups().get(i).getRank()<ret.getRank())
+			if(player.getGroups().get(i).getWeight()<ret.getWeight())
 			{
 				ret=player.getGroups().get(i);
 			}

@@ -58,6 +58,7 @@ public class YAMLBackEnd implements BackEnd
 			List<String> permissions=permsconf.getListString("groups."+g+".permissions", new ArrayList<String>());
 			boolean isdefault=permsconf.getBoolean("groups."+g+".default",false);
 			int rank=permsconf.getInt("groups."+g+".rank", 1000);
+			int weight=permsconf.getInt("groups."+g+".weight", 1000);
 			String ladder=permsconf.getString("groups."+g+".ladder", "default");
 			String display=permsconf.getString("groups."+g+".display", "");
 			String prefix=permsconf.getString("groups."+g+".prefix", "");
@@ -88,7 +89,7 @@ public class YAMLBackEnd implements BackEnd
                 servers.put(server, new Server(server,serverperms,worlds,sdisplay,sprefix,ssuffix));
 			}
 			
-			Group group=new Group(g, inheritances, permissions, servers, rank, ladder, isdefault, display, prefix, suffix);
+			Group group=new Group(g, inheritances, permissions, servers, rank, weight, ladder, isdefault, display, prefix, suffix);
 			ret.add(group);
 		}
         Collections.sort(ret);
@@ -144,6 +145,7 @@ public class YAMLBackEnd implements BackEnd
         List<String> permissions=permsconf.getListString("groups."+group+".permissions", new ArrayList<String>());
         boolean isdefault=permsconf.getBoolean("groups."+group+".default",false);
         int rank=permsconf.getInt("groups."+group+".rank", 1000);
+        int weight=permsconf.getInt("groups."+group+".weight", 1000);
         String ladder=permsconf.getString("groups."+group+".ladder", "default");
         String display=permsconf.getString("groups."+group+".display", "");
         String prefix=permsconf.getString("groups."+group+".prefix", "");
@@ -174,7 +176,7 @@ public class YAMLBackEnd implements BackEnd
             servers.put(server, new Server(server,serverperms,worlds,sdisplay,sprefix,ssuffix));
         }
 
-        Group g=new Group(group, inheritances, permissions, servers, rank, ladder, isdefault, display, prefix, suffix);
+        Group g=new Group(group, inheritances, permissions, servers, rank, weight, ladder, isdefault, display, prefix, suffix);
         return g;
     }
     @Override
@@ -251,6 +253,7 @@ public class YAMLBackEnd implements BackEnd
         List<String> permissions=permsconf.getListString("groups."+group.getName()+".permissions", new ArrayList<String>());
         boolean isdefault=permsconf.getBoolean("groups."+group.getName()+".default",false);
         int rank=permsconf.getInt("groups."+group.getName()+".rank", 1000);
+        int weight=permsconf.getInt("groups."+group.getName()+".weight", 1000);
         String ladder=permsconf.getString("groups."+group.getName()+".ladder", "default");
         String display=permsconf.getString("groups."+group.getName()+".display", "");
         String prefix=permsconf.getString("groups."+group.getName()+".prefix", "");
@@ -285,6 +288,7 @@ public class YAMLBackEnd implements BackEnd
         group.setPerms(permissions);
         group.setIsdefault(isdefault);
         group.setRank(rank);
+        group.setWeight(weight);
         group.setLadder(ladder);
         group.setDisplay(display);
         group.setPrefix(prefix);
