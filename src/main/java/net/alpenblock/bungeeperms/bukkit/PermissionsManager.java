@@ -76,13 +76,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
         //load all groups
         groups=backend.loadGroups();
         
-        //load online players; allows reload
         users=new ArrayList<>();
-        for(Player p:Bukkit.getOnlinePlayers())
-        {
-            getUser(p.getName());
-            setBukkitPermissions(p);
-        }
         
         //load permsversion
         permsversion=backend.loadVersion();
@@ -94,6 +88,13 @@ public class PermissionsManager implements Listener,PluginMessageListener
     {
         if(!enabled)
         {
+            //load online players; allows reload
+            for(Player p:Bukkit.getOnlinePlayers())
+            {
+                getUser(p.getName());
+                setBukkitPermissions(p);
+            }
+            
             server.getPluginManager().registerEvents(this,plugin);
             server.getMessenger().registerOutgoingPluginChannel(plugin, channel);
             server.getMessenger().registerIncomingPluginChannel(plugin, channel, this);
