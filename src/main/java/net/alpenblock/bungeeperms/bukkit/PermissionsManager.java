@@ -3,11 +3,19 @@ package net.alpenblock.bungeeperms.bukkit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 import net.alpenblock.bungeeperms.bukkit.io.BackEnd;
 import net.alpenblock.bungeeperms.bukkit.io.BackEndType;
 import net.alpenblock.bungeeperms.bukkit.io.MySQL2BackEnd;
 import net.alpenblock.bungeeperms.bukkit.io.MySQLBackEnd;
+import net.alpenblock.bungeeperms.bukkit.io.MySQLUUIDPlayerDB;
+import net.alpenblock.bungeeperms.bukkit.io.NoneUUIDPlayerDB;
+import net.alpenblock.bungeeperms.bukkit.io.UUIDPlayerDB;
+import net.alpenblock.bungeeperms.bukkit.io.UUIDPlayerDBType;
 import net.alpenblock.bungeeperms.bukkit.io.YAMLBackEnd;
+import net.alpenblock.bungeeperms.bukkit.io.YAMLUUIDPlayerDB;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -33,7 +41,18 @@ public class PermissionsManager implements Listener,PluginMessageListener
     
     private String channel;
     
-    private BackEnd backend;
+    @Getter
+    private boolean saveAllUsers;
+    @Getter
+    private boolean deleteUsersOnCleanup;
+    
+    @Getter @Setter
+    private BackEnd backEnd;
+    @Getter
+    private UUIDPlayerDB UUIDPlayerDB;
+    
+    @Getter
+    private boolean useUUIDs;
     
     private List<Group> groups;
     private List<User> users;
@@ -57,29 +76,45 @@ public class PermissionsManager implements Listener,PluginMessageListener
 	public final void loadPerms()
 	{
 		server.getLogger().info("[BungeePerms] loading permissions ...");
+        
+        useUUIDs=config.getBoolean("useUUIDs", false);
 		
         BackEndType bet=config.getEnumValue("backendtype",BackEndType.MySQL);
         if(bet==BackEndType.YAML)
         {
-            backend=new YAMLBackEnd(server,plugin);
+            backEnd=new YAMLBackEnd(server,plugin);
         }
         else if(bet==BackEndType.MySQL)
         {
-            backend=new MySQLBackEnd(server,config,debug);
+            backEnd=new MySQLBackEnd(server,config,debug);
         }
         else if(bet==BackEndType.MySQL2)
         {
-            backend=new MySQL2BackEnd(server,config,debug);
+            backEnd=new MySQL2BackEnd(server,config,debug);
         }
-        backend.load();
+        backEnd.load();
+        
+        UUIDPlayerDBType updbt=config.getEnumValue("backendtype",UUIDPlayerDBType.None);
+        if(updbt==UUIDPlayerDBType.None)
+        {
+            UUIDPlayerDB=new NoneUUIDPlayerDB();
+        }
+        else if(updbt==UUIDPlayerDBType.YAML)
+        {
+            UUIDPlayerDB=new YAMLUUIDPlayerDB();
+        }
+        else if(updbt==UUIDPlayerDBType.MySQL)
+        {
+            UUIDPlayerDB=new MySQLUUIDPlayerDB(config,debug);
+        }
         
         //load all groups
-        groups=backend.loadGroups();
+        groups=backEnd.loadGroups();
         
         users=new ArrayList<>();
         
         //load permsversion
-        permsversion=backend.loadVersion();
+        permsversion=backEnd.loadVersion();
 		
 		server.getLogger().info("[BungeePerms] permissions loaded");
 	}
@@ -91,7 +126,14 @@ public class PermissionsManager implements Listener,PluginMessageListener
             //load online players; allows reload
             for(Player p:Bukkit.getOnlinePlayers())
             {
-                getUser(p.getName());
+                if(useUUIDs)
+                {
+                    getUser(p.getUniqueId());
+                }
+                else
+                {
+                    getUser(p.getName());
+                }
                 setBukkitPermissions(p);
             }
             
@@ -215,7 +257,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
 			}
 		}
         
-        Group g=backend.loadGroup(groupname);
+        Group g=backEnd.loadGroup(groupname);
         
         Collections.sort(groups);
         for(Group gr:groups)
@@ -225,18 +267,44 @@ public class PermissionsManager implements Listener,PluginMessageListener
         
 		return null;
 	}
-	public synchronized User getUser(String username)
+	public synchronized User getUser(String usernameoruuid)
 	{
+        UUID uuid=Statics.parseUUID(usernameoruuid);
+        if(uuid!=null)
+        {
+            return getUser(uuid);
+        }
+        
 		for(User u:users)
 		{
-			if(u.getName().equalsIgnoreCase(username))
+			if(u.getName().equalsIgnoreCase(usernameoruuid))
 			{
 				return u;
 			}
 		}
         
         //load user from database
-        User u=backend.loadUser(username);
+        User u=backEnd.loadUser(usernameoruuid);
+        if(u!=null)
+        {
+            users.add(u);
+            return u;
+        }
+        
+		return null;
+	}
+    public synchronized User getUser(UUID uuid)
+	{
+		for(User u:users)
+		{
+			if(u.getUUID().equals(uuid))
+			{
+				return u;
+			}
+		}
+        
+        //load user from database
+        User u=backEnd.loadUser(uuid);
         if(u!=null)
         {
             users.add(u);
@@ -258,7 +326,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void onLogin(PlayerLoginEvent e)
 	{
-        reloadUser(e.getPlayer().getName());
+        reloadUser(e.getPlayer().getUniqueId());
         
         //inject permissible
         Permissible permissible=new Permissible(e.getPlayer());
@@ -285,7 +353,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
         //uninject permissible
         Injector.uninject(e.getPlayer());
         
-        User u=getUser(e.getPlayer().getName());
+        User u=getUser(e.getPlayer().getUniqueId());
         users.remove(u);
 	}
     @EventHandler
@@ -302,7 +370,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
 	{
 		if(sender instanceof Player)
 		{
-			return getUser(sender.getName()).hasPerm(permission);
+			return (useUUIDs ? getUser(((Player)sender).getUniqueId()) : getUser(sender.getName())).hasPerm(permission);
 		}
 		return false;
 	}
@@ -310,7 +378,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
 	{
 		if(sender instanceof Player)
 		{
-			return getUser(sender.getName()).hasPerm(permission);
+			return (useUUIDs ? getUser(((Player)sender).getUniqueId()) : getUser(sender.getName())).hasPerm(permission);
 		}
 		else if(sender instanceof ConsoleCommandSender)
 		{
@@ -439,16 +507,6 @@ public class PermissionsManager implements Listener,PluginMessageListener
 		}
 	}
 
-    //backend
-    public BackEnd getBackEnd() 
-    {
-        return backend;
-    }
-    public void setBackEnd(BackEnd backend)
-    {
-        this.backend = backend;
-    }
-    
     //permissions update
     private void setBukkitPermissions(Player player) 
     {
@@ -571,7 +629,19 @@ public class PermissionsManager implements Listener,PluginMessageListener
             debug.log("User "+user+" not found!!!");
             return;
         }
-        backend.reloadUser(u);
+        backEnd.reloadUser(u);
+        u.recalcPerms();
+        //refreshBukkitPermissions(user);
+    }
+    private void reloadUser(UUID uuid)
+    {
+        User u=getUser(uuid);
+        if(u==null)
+        {
+            debug.log("User "+uuid+" not found!!!");
+            return;
+        }
+        backEnd.reloadUser(u);
         u.recalcPerms();
         //refreshBukkitPermissions(user);
     }
@@ -583,7 +653,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
             debug.log("Group "+group+" not found!!!");
             return;
         }
-        backend.reloadGroup(g);
+        backEnd.reloadGroup(g);
         Collections.sort(groups);
         for(Group gr:groups)
         {
@@ -599,7 +669,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
     {
         for(User u:users)
         {
-            backend.reloadUser(u);
+            backEnd.reloadUser(u);
             u.recalcPerms();
         }
     }
@@ -607,7 +677,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
     {
         for(Group g:groups)
         {
-            backend.reloadGroup(g);
+            backEnd.reloadGroup(g);
         }
         Collections.sort(groups);
         for(Group g:groups)

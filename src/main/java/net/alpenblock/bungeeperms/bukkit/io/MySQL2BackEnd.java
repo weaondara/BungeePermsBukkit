@@ -5,11 +5,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import net.alpenblock.bungeeperms.bukkit.BungeePerms;
 import net.alpenblock.bungeeperms.bukkit.Config;
 import net.alpenblock.bungeeperms.bukkit.Debug;
 import net.alpenblock.bungeeperms.bukkit.Group;
 import net.alpenblock.bungeeperms.bukkit.Mysql;
+import net.alpenblock.bungeeperms.bukkit.PermissionsManager;
 import net.alpenblock.bungeeperms.bukkit.Server;
 import net.alpenblock.bungeeperms.bukkit.User;
 import net.alpenblock.bungeeperms.bukkit.World;
@@ -276,7 +278,77 @@ public class MySQL2BackEnd implements BackEnd
             }
         }
 
-        User u=new User(mpe.getName(), lgroups, globalperms, serverperms,serverworldperms);
+        UUID uuid=BungeePerms.getInstance().getPermissionsManager().getUUIDPlayerDB().getUUID(mpe.getName());
+        User u=new User(mpe.getName(), uuid, lgroups, globalperms, serverperms,serverworldperms);
+        return u;
+    }
+    @Override
+    public User loadUser(UUID user) 
+    {
+        MysqlPermEntity mpe = adapter.getUser(user.toString());
+        if(mpe.getName()==null)
+        {
+            return null;
+        }
+        
+        List<String> sgroups=getValue(mpe.getData("groups"));
+        List<Group> lgroups=new ArrayList<>();
+        for(String s:sgroups)
+        {
+            Group g=BungeePerms.getInstance().getPermissionsManager().getGroup(s);
+            if(g!=null)
+            {
+                lgroups.add(g);
+            }
+        }
+
+
+        //perms
+        List<ValueEntry> permdata = mpe.getData("permissions");
+        if(permdata==null)
+        {
+            permdata=new ArrayList<>();
+        }
+        List<String> globalperms=new ArrayList<>();
+        Map<String,List<String>> serverperms=new HashMap<>();
+        Map<String,Map<String,List<String>>> serverworldperms=new HashMap<>();
+        for(ValueEntry e:permdata)
+        {
+            if(e.getServer()==null)
+            {
+                globalperms.add(e.getValue());
+            }
+            else if(e.getWorld()==null)
+            {
+                List<String> server = serverperms.get(e.getServer().toLowerCase());
+                if(server==null)
+                {
+                    server=new ArrayList<>();
+                    serverperms.put(e.getServer().toLowerCase(), server);
+                }
+                server.add(e.getValue());
+            }
+            else
+            {
+                Map<String, List<String>> server = serverworldperms.get(e.getServer().toLowerCase());
+                if(server==null)
+                {
+                    server=new HashMap<>();
+                    serverworldperms.put(e.getServer().toLowerCase(), server);
+                }
+
+                List<String> world = server.get(e.getWorld().toLowerCase());
+                if(world==null)
+                {
+                    world=new ArrayList<>();
+                    server.put(e.getWorld().toLowerCase(), world);
+                }
+                world.add(e.getValue());
+            }
+        }
+
+        String username=BungeePerms.getInstance().getPermissionsManager().getUUIDPlayerDB().getPlayerName(user);
+        User u=new User(username, user, lgroups, globalperms, serverperms,serverworldperms);
         return u;
     }
     @Override
@@ -510,7 +582,7 @@ public class MySQL2BackEnd implements BackEnd
     @Override
     public void reloadUser(User user) 
     {
-        MysqlPermEntity mpe = adapter.getUser(user.getName());
+        MysqlPermEntity mpe = adapter.getUser(BungeePerms.getInstance().getPermissionsManager().isUseUUIDs() ? user.getUUID().toString() : user.getName());
         List<String> sgroups=getValue(mpe.getData("groups"));
         List<Group> lgroups=new ArrayList<>();
         for(String s:sgroups)

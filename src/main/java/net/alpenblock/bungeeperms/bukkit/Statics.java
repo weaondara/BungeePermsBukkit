@@ -3,6 +3,7 @@ package net.alpenblock.bungeeperms.bukkit;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
@@ -149,5 +150,30 @@ public class Statics {
         } 
         catch (Exception ex) 
         { }
+    }
+    
+    public static UUID parseUUID(String s)
+    {
+        try
+        {
+            return UUID.fromString(s);
+        }
+        catch(Exception e) {}
+        
+        if(s.length()==32)
+        {
+            s=s.substring(0,8)+"-"+
+                    s.substring(8,12)+"-"+
+                    s.substring(12,16)+"-"+
+                    s.substring(16,20)+"-"+
+                    s.substring(20,32)+"-";
+            try
+            {
+                return UUID.fromString(s);
+            }
+            catch(Exception e) {}
+        }
+        
+        return null;
     }
 }
