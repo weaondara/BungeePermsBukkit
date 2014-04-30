@@ -17,6 +17,8 @@ public class YAMLUUIDPlayerDB implements UUIDPlayerDB
     @Override
     public UUID getUUID(String player)
     {
+        uuidconf.load();
+        
         UUID ret=null;
         
         for(String uuid:uuidconf.getSubNodes(""))
@@ -33,6 +35,8 @@ public class YAMLUUIDPlayerDB implements UUIDPlayerDB
     @Override
     public String getPlayerName(UUID uuid)
     {
+        uuidconf.load();
+        
         String ret=null;
         
         for(String suuid:uuidconf.getSubNodes(""))
