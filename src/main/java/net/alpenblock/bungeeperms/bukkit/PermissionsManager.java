@@ -94,7 +94,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
         }
         backEnd.load();
         
-        UUIDPlayerDBType updbt=config.getEnumValue("backendtype",UUIDPlayerDBType.None);
+        UUIDPlayerDBType updbt=config.getEnumValue("uuidplayerdb",UUIDPlayerDBType.None);
         if(updbt==UUIDPlayerDBType.None)
         {
             UUIDPlayerDB=new NoneUUIDPlayerDB();
