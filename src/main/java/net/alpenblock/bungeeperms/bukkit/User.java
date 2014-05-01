@@ -5,29 +5,36 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 
+@Getter
+@Setter
 public class User
 {
+    @Getter(value = AccessLevel.PRIVATE)
+    @Setter(value = AccessLevel.PRIVATE)
     private Map<String,List<String>> cachedPerms;
     
 	private String name;
     private UUID uuid;
 	private List<Group> groups;
 	private List<String> extraperms;
-	private Map<String, List<String>> serverperms;
-    private Map<String, Map<String, List<String>>> serverworldperms;
+	private Map<String, List<String>> serverPerms;
+    private Map<String, Map<String, List<String>>> serverWorldPerms;
 	
-	public User(String name, UUID uuid, List<Group> groups, List<String> extraperms, Map<String, List<String>> serverperms, Map<String, Map<String, List<String>>> serverworldperms) 
+	public User(String name, UUID uuid, List<Group> groups, List<String> extraperms, Map<String, List<String>> serverPerms, Map<String, Map<String, List<String>>> serverWorldPerms) 
 	{
-        cachedPerms=new HashMap<>();
-        
 		this.name = name;
         this.uuid = uuid;
 		this.groups = groups;
 		this.extraperms = extraperms;
-		this.serverperms = serverperms;
-		this.serverworldperms = serverworldperms;
+		this.serverPerms = serverPerms;
+		this.serverWorldPerms = serverWorldPerms;
+        
+        cachedPerms=new HashMap<>();
 	}
 	
     public String getName()
@@ -64,19 +71,19 @@ public class User
     }
     public Map<String, List<String>> getServerPerms()
     {
-        return serverperms;
+        return serverPerms;
     }
-    public void setServerPerms(Map<String, List<String>> serverperms)
+    public void setServerPerms(Map<String, List<String>> serverPerms)
     {
-        this.serverperms = serverperms;
+        this.serverPerms = serverPerms;
     }
     public Map<String, Map<String, List<String>>> getServerWorldPerms()
     {
-        return serverworldperms;
+        return serverWorldPerms;
     }
-    public void setServerWorldPerms(Map<String, Map<String, List<String>>> serverworldperms)
+    public void setServerWorldPerms(Map<String, Map<String, List<String>>> serverWorldPerms)
     {
-        this.serverworldperms = serverworldperms;
+        this.serverWorldPerms = serverWorldPerms;
     }
 
     public boolean hasPerm(String perm)
@@ -408,8 +415,8 @@ public class User
 //			{
 //				srv=new Server(server,new ArrayList<String>(),new HashMap<String,World>(),"","","");
 //			}
-//			List<String> serverperms=srv.getPerms();
-//			for(String perm:serverperms)
+//			List<String> serverPerms=srv.getPerms();
+//			for(String perm:serverPerms)
 //			{
 //				boolean added=false;
 //				for(int i=0;i<ret.size();i++)
@@ -470,12 +477,12 @@ public class User
 		}
 		
 		//per server perms
-		List<String> perserverperms=serverperms.get(server.toLowerCase());
-		if(perserverperms==null)
+		List<String> perserverPerms=serverPerms.get(server.toLowerCase());
+		if(perserverPerms==null)
 		{
-			perserverperms=new ArrayList<>();
+			perserverPerms=new ArrayList<>();
 		}
-		for(String perm:perserverperms)
+		for(String perm:perserverPerms)
 		{
 			boolean added=false;
 			for(int i=0;i<ret.size();i++)
@@ -547,8 +554,8 @@ public class User
 //			{
 //				srv=new Server(server,new ArrayList<String>(),new HashMap<String,World>(),"","","");
 //			}
-//			List<String> serverperms=srv.getPerms();
-//			for(String perm:serverperms)
+//			List<String> serverPerms=srv.getPerms();
+//			for(String perm:serverPerms)
 //			{
 //				boolean added=false;
 //				for(int i=0;i<ret.size();i++)
@@ -583,8 +590,8 @@ public class User
 //            {
 //                w=new World(server,new ArrayList<String>(),"","","");
 //            }
-//            List<String> serverworldperms=w.getPerms();
-//            for(String perm:serverworldperms)
+//            List<String> serverWorldPerms=w.getPerms();
+//            for(String perm:serverWorldPerms)
 //            {
 //                boolean added=false;
 //                for(int i=0;i<ret.size();i++)
@@ -645,12 +652,12 @@ public class User
 		}
 		
 		//per server perms
-		List<String> perserverperms=serverperms.get(server.toLowerCase());
-		if(perserverperms==null)
+		List<String> perserverPerms=serverPerms.get(server.toLowerCase());
+		if(perserverPerms==null)
 		{
-			perserverperms=new ArrayList<>();
+			perserverPerms=new ArrayList<>();
 		}
-		for(String perm:perserverperms)
+		for(String perm:perserverPerms)
 		{
 			boolean added=false;
 			for(int i=0;i<ret.size();i++)
@@ -680,17 +687,17 @@ public class User
 		}
         
         //per server world perms
-        Map<String,List<String>> serverperms=serverworldperms.get(server.toLowerCase());
-        if(serverperms==null)
+        Map<String,List<String>> serverPerms=serverWorldPerms.get(server.toLowerCase());
+        if(serverPerms==null)
         {
-            serverperms=new HashMap<>();
+            serverPerms=new HashMap<>();
         }
-        List<String> serverworldperms=serverperms.get(world.toLowerCase());
-        if(serverworldperms==null)
+        List<String> serverWorldPerms=serverPerms.get(world.toLowerCase());
+        if(serverWorldPerms==null)
         {
-            serverworldperms=new ArrayList<>();
+            serverWorldPerms=new ArrayList<>();
         }
-        for(String perm:serverworldperms)
+        for(String perm:serverWorldPerms)
         {
             boolean added=false;
             for(int i=0;i<ret.size();i++)
@@ -788,7 +795,7 @@ public class User
                 return false;
             }
         }
-        return serverworldperms.isEmpty()&serverperms.isEmpty()&extraperms.isEmpty();
+        return serverWorldPerms.isEmpty()&serverPerms.isEmpty()&extraperms.isEmpty();
     }
 
     public Group getGroupByLadder(String ladder) 
