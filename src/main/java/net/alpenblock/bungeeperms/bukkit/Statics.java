@@ -151,6 +151,17 @@ public class Statics {
         catch (Exception ex) 
         { }
     }
+    public static void setField(Class clazz, Object instance,Object var,String varname) 
+    {
+        try 
+        {
+            Field f=clazz.getDeclaredField(varname);
+            f.setAccessible(true);
+            f.set(instance, var);
+        } 
+        catch (Exception ex) 
+        { }
+    }
     
     public static UUID parseUUID(String s)
     {
