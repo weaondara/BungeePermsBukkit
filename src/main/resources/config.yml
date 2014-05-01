@@ -1,4 +1,3 @@
-backendtype: YAML
 debug:
   path: plugins/BungeePermsBukkit/debug.log
   showexceptions: true
@@ -10,6 +9,8 @@ bungeeperms:
     mysqldb: bungeeperms
     mysqluser: bungeeperms
     mysqlpw: password
-allowops: false
-useUUIDs: false
+backendtype: YAML
 uuidplayerdb: YAML
+useUUIDs: false
+allowops: false
+servername: someserver
