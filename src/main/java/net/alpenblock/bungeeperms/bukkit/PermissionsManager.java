@@ -54,6 +54,12 @@ public class PermissionsManager implements Listener,PluginMessageListener
     @Getter
     private boolean useUUIDs;
     
+    @Getter
+    private boolean useregexperms;
+    
+    @Getter
+    private PermissionsResolver resolver;
+    
     private List<Group> groups;
     private List<User> users;
     private int permsversion;
@@ -66,6 +72,8 @@ public class PermissionsManager implements Listener,PluginMessageListener
         debug=d;
         
         channel="bungeeperms";
+        
+        resolver=new PermissionsResolver();
 		
 		//perms
 		loadPerms();
@@ -79,6 +87,9 @@ public class PermissionsManager implements Listener,PluginMessageListener
         
         useUUIDs=config.getBoolean("useUUIDs", false);
 		
+        useregexperms=config.getBoolean("useregexperms", false);
+        resolver.setUseRegex(useregexperms);
+        
         BackEndType bet=config.getEnumValue("backendtype",BackEndType.MySQL);
         if(bet==BackEndType.YAML)
         {
