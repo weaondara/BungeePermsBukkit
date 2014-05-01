@@ -1,5 +1,5 @@
 name: BungeePermsBukkit
 main: net.alpenblock.bungeeperms.bukkit.BungeePerms
-version: 2.2.0
+version: 2.2.1
 author: wea_ondara
 load: startup
