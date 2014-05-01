@@ -60,6 +60,9 @@ public class PermissionsManager implements Listener,PluginMessageListener
     @Getter
     private PermissionsResolver resolver;
     
+    @Getter 
+    private boolean superpermscompat;
+    
     private List<Group> groups;
     private List<User> users;
     private int permsversion;
@@ -89,6 +92,8 @@ public class PermissionsManager implements Listener,PluginMessageListener
 		
         useregexperms=config.getBoolean("useregexperms", false);
         resolver.setUseRegex(useregexperms);
+        
+        superpermscompat=config.getBoolean("superpermscompat", false);
         
         BackEndType bet=config.getEnumValue("backendtype",BackEndType.MySQL);
         if(bet==BackEndType.YAML)
