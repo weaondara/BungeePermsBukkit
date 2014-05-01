@@ -134,6 +134,11 @@ public class PermissionsManager implements Listener,PluginMessageListener
     {
         if(!enabled)
         {
+            //inject into console
+            Permissible permissible=new Permissible(server.getConsoleSender());
+            org.bukkit.permissions.Permissible oldpermissible=Injector.inject(server.getConsoleSender(), permissible);
+            permissible.setOldPermissible(oldpermissible);
+            
             //load online players; allows reload
             for(Player p:Bukkit.getOnlinePlayers())
             {
@@ -158,6 +163,9 @@ public class PermissionsManager implements Listener,PluginMessageListener
     {
         if(!enabled)
         {
+            //uninject from console
+            Injector.uninject(server.getConsoleSender());
+            
             PlayerLoginEvent.getHandlerList().unregister(this);
             PlayerJoinEvent.getHandlerList().unregister(this);
             PlayerQuitEvent.getHandlerList().unregister(this);

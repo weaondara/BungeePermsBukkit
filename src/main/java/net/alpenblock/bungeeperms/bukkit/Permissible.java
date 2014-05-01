@@ -4,6 +4,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissibleBase;
 import org.bukkit.permissions.Permission;
@@ -15,14 +17,14 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
  */
 public class Permissible extends PermissibleBase
 {
-	private Player player;
+	private CommandSender sender;
     private Map<String, PermissionAttachmentInfo> permissions;
 	private org.bukkit.permissions.Permissible oldpermissible = null;
     
-    public Permissible(Player player) 
+    public Permissible(CommandSender sender) 
     {
-		super(player);
-		this.player = player;
+		super(sender);
+		this.sender = sender;
 		permissions = new LinkedHashMap<String, PermissionAttachmentInfo>() {
 			@Override
 			public PermissionAttachmentInfo put(String k, PermissionAttachmentInfo v) {
@@ -50,8 +52,16 @@ public class Permissible extends PermissibleBase
 	@Override
 	public boolean hasPermission(String permission) 
     {
-        boolean res=BungeePerms.getInstance().getPermissionsManager().hasPermOnServerInWorld(player.getName(), permission, BungeePerms.getInstance().getServerName(), player.getWorld().getName());
+        boolean res=BungeePerms.getInstance().getPermissionsManager().hasPermOrConsoleOnServerInWorld(
+                sender.getName(), 
+                permission, 
+                BungeePerms.getInstance().getServerName(), 
+                (sender instanceof Player ? ((Player)sender).getWorld().getName() : null));
         //System.out.println(player+" has perm "+permission+"="+res);
+//        if(sender instanceof ConsoleCommandSender)
+//        {
+//            System.out.println("console :D");
+//        }
 		return res;
 	}
 	@Override

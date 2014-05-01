@@ -1,28 +1,34 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.alpenblock.bungeeperms.bukkit;
 
 import java.lang.reflect.Field;
 import java.util.List;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissibleBase;
 
-/**
- *
- * @author alex
- */
 public class Injector 
 {
-    public static org.bukkit.permissions.Permissible inject(Player player, org.bukkit.permissions.Permissible newpermissible) 
+    public static org.bukkit.permissions.Permissible inject(CommandSender sender, org.bukkit.permissions.Permissible newpermissible) 
     {
         try
         {
-            Field perm = Class.forName(getVersionedClassName("entity.CraftHumanEntity")).getDeclaredField("perm");
+            Field perm;
+            if(sender instanceof Player)
+            {
+                perm = Class.forName(getVersionedClassName("entity.CraftHumanEntity")).getDeclaredField("perm");
+            }
+            else if(sender instanceof ConsoleCommandSender)
+            {
+                perm = Class.forName(getVersionedClassName("command.ServerCommandSender")).getDeclaredField("perm");
+            }
+            else
+            {
+                return null;
+            }
             perm.setAccessible(true);
-            org.bukkit.permissions.Permissible oldpermissible = (org.bukkit.permissions.Permissible) perm.get(player);
+            org.bukkit.permissions.Permissible oldpermissible = (org.bukkit.permissions.Permissible) perm.get(sender);
             if (newpermissible instanceof PermissibleBase) 
             {
                 //copy attachments
@@ -32,22 +38,34 @@ public class Injector
             }
 
             // inject permissible
-            perm.set(player, newpermissible);
+            perm.set(sender, newpermissible);
             return oldpermissible;
         }
         catch (Exception e) {e.printStackTrace();}
 		return null;
 	}
-    public static org.bukkit.permissions.Permissible uninject(Player player) 
+    public static org.bukkit.permissions.Permissible uninject(CommandSender sender) 
     {
         try
         {
-            Field perm = Class.forName(getVersionedClassName("entity.CraftHumanEntity")).getDeclaredField("perm");
+            Field perm;
+            if(sender instanceof Player)
+            {
+                perm = Class.forName(getVersionedClassName("entity.CraftHumanEntity")).getDeclaredField("perm");
+            }
+            else if(sender instanceof ConsoleCommandSender)
+            {
+                perm = Class.forName(getVersionedClassName("command.ServerCommandSender")).getDeclaredField("perm");
+            }
+            else
+            {
+                return null;
+            }
             perm.setAccessible(true);
-            org.bukkit.permissions.Permissible permissible = (org.bukkit.permissions.Permissible) perm.get(player);
+            org.bukkit.permissions.Permissible permissible = (org.bukkit.permissions.Permissible) perm.get(sender);
             if (permissible instanceof Permissible) 
             {
-                perm.set(player, ((Permissible)permissible).getOldPermissible());
+                perm.set(sender, ((Permissible)permissible).getOldPermissible());
                 return (Permissible)permissible;
             }
 
