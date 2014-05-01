@@ -355,7 +355,7 @@ public class MySQLBackEnd implements BackEnd
         }
 
         user.setGroups(lgroups);
-        user.setExtraperms(extrapermissions);
+        user.setExtraPerms(extrapermissions);
         user.setServerPerms(serverperms);
         user.setServerWorldPerms(serverworldperms);
     }

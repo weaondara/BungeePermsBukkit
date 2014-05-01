@@ -640,7 +640,7 @@ public class MySQL2BackEnd implements BackEnd
         }
         
         user.setGroups(lgroups);
-        user.setExtraperms(globalperms);
+        user.setExtraPerms(globalperms);
         user.setServerPerms(serverperms);
         user.setServerWorldPerms(serverworldperms);
     }
