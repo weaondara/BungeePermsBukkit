@@ -10,6 +10,7 @@ bungeeperms:
     mysqluser: bungeeperms
     mysqlpw: password
 backendtype: YAML
+tablePrefix: bungeeperms_
 uuidplayerdb: YAML
 useUUIDs: false
 allowops: false
