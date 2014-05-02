@@ -51,6 +51,15 @@ public class Permissible extends PermissibleBase
     {
 		this.oldpermissible = oldPermissible;
 	}
+    
+    public boolean hasSuperPerm(String perm)
+    {
+        if(oldpermissible==null)
+        {
+            return super.hasPermission(perm);
+        }
+        return oldpermissible.hasPermission(perm);
+    }
 
 	@Override
 	public boolean hasPermission(String permission) 
@@ -65,11 +74,6 @@ public class Permissible extends PermissibleBase
 //        {
 //            System.out.println("console :D");
 //        }
-        
-        if(!res && BungeePerms.getInstance().getPermissionsManager().isSuperpermscompat())
-        {
-            res=oldpermissible.hasPermission(permission);
-        }
         
 		return res;
 	}

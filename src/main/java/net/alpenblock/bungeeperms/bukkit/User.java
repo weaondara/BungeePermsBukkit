@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissibleBase;
 
 @Getter
 @Setter
@@ -45,7 +47,9 @@ public class User
         
         Boolean has=BungeePerms.getInstance().getPermissionsManager().getResolver().has(perms, perm);
 		
-        return has!=null && has;
+        has=checkSuperPerms(has, perm);
+		
+        return has;
 	}
 	public boolean hasPermOnServer(String perm, String server) 
 	{
@@ -53,15 +57,19 @@ public class User
         
         Boolean has=BungeePerms.getInstance().getPermissionsManager().getResolver().has(perms, perm);
 		
-        return has!=null && has;
+        has=checkSuperPerms(has, perm);
+		
+        return has;
 	}
     public boolean hasPermOnServerInWorld(String perm, String server, String world) 
 	{
 		List<String> perms=getEffectivePerms(server,world);
 		        
         Boolean has=BungeePerms.getInstance().getPermissionsManager().getResolver().has(perms, perm);
+        
+        has=checkSuperPerms(has, perm);
 		
-        return has!=null && has;
+        return has;
 	}
 	
 	public List<String> getEffectivePerms()
@@ -246,5 +254,30 @@ public class User
             }
         }
         return null;
+    }
+    
+    private boolean checkSuperPerms(Boolean has, String perm)
+    {
+        if(has!=null)
+        {
+            return has;
+        }
+        
+        has=false;
+        if(BungeePerms.getInstance().getPermissionsManager().isSuperpermscompat())
+        {
+            Player p=BungeePerms.getInstance().getPermissionsManager().isUseUUIDs() ? Bukkit.getServer().getPlayer(UUID) : Bukkit.getServer().getPlayer(name);
+            if(p!=null)
+            {
+                PermissibleBase base=Injector.getPermissible(p);
+                if(base instanceof Permissible)
+                {
+                    Permissible permissible=(Permissible) base;
+                    has=permissible.hasSuperPerm(perm);
+                }
+            }
+        }
+        
+        return has;
     }
 }
