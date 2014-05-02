@@ -14,16 +14,8 @@ public class Injector
     {
         try
         {
-            Field perm;
-            if(sender instanceof Player)
-            {
-                perm = Class.forName(getVersionedClassName("entity.CraftHumanEntity")).getDeclaredField("perm");
-            }
-            else if(sender instanceof ConsoleCommandSender)
-            {
-                perm = Class.forName(getVersionedClassName("command.ServerCommandSender")).getDeclaredField("perm");
-            }
-            else
+            Field perm=getPermField(sender);
+            if(perm==null)
             {
                 return null;
             }
@@ -48,16 +40,8 @@ public class Injector
     {
         try
         {
-            Field perm;
-            if(sender instanceof Player)
-            {
-                perm = Class.forName(getVersionedClassName("entity.CraftHumanEntity")).getDeclaredField("perm");
-            }
-            else if(sender instanceof ConsoleCommandSender)
-            {
-                perm = Class.forName(getVersionedClassName("command.ServerCommandSender")).getDeclaredField("perm");
-            }
-            else
+            Field perm=getPermField(sender);
+            if(perm==null)
             {
                 return null;
             }
@@ -75,6 +59,41 @@ public class Injector
 		return null;
 	}
     
+    public static org.bukkit.permissions.PermissibleBase getPermissible(CommandSender sender) 
+    {
+        try
+        {
+            Field perm=getPermField(sender);
+            if(perm==null)
+            {
+                return null;
+            }
+            perm.setAccessible(true);
+            PermissibleBase permissible = (PermissibleBase) perm.get(sender);
+
+            return permissible;
+        }
+        catch (Exception e) {e.printStackTrace();}
+		return null;
+    }
+    
+    private static Field getPermField(CommandSender sender) 
+    {
+        Field perm=null;
+        try
+        {
+            if(sender instanceof Player)
+            {
+                perm = Class.forName(getVersionedClassName("entity.CraftHumanEntity")).getDeclaredField("perm");
+            }
+            else if(sender instanceof ConsoleCommandSender)
+            {
+                perm = Class.forName(getVersionedClassName("command.ServerCommandSender")).getDeclaredField("perm");
+            }
+        }
+        catch (Exception e) {e.printStackTrace();}
+        return perm;
+    }
 	private static String getVersionedClassName(String classname) 
     {
         String version;
