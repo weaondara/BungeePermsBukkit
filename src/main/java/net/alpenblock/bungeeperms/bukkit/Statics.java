@@ -140,6 +140,20 @@ public class Statics {
             return null;
         }
     }
+    public static <T> T getField(Class clazz, Object instance,Class<T> type,String varname) 
+    {
+        try 
+        {
+            Field f=clazz.getDeclaredField(varname);
+            f.setAccessible(true);
+            T old=(T) f.get(instance);
+            return old;
+        } 
+        catch (Exception ex) 
+        {
+            return null;
+        }
+    }
     public static void setField(Object instance,Object var,String varname) 
     {
         try 
