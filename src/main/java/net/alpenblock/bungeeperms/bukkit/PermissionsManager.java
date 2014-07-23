@@ -332,7 +332,7 @@ public class PermissionsManager implements Listener,PluginMessageListener
 	{
 		for(User u:users)
 		{
-			if(u.getUUID().equals(uuid))
+			if(u.getUUID() != null && u.getUUID().equals(uuid))
 			{
 				return u;
 			}
