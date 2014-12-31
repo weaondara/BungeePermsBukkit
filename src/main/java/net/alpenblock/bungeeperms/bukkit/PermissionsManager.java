@@ -293,21 +293,21 @@ public class PermissionsManager implements Listener,PluginMessageListener
 	}
 	public synchronized User getUser(String usernameoruuid)
 	{
+        UUID uuid=Statics.parseUUID(usernameoruuid);
         if(useUUIDs)
         {
-            UUID uuid=Statics.parseUUID(usernameoruuid);
             if(uuid!=null)
             {
                 return getUser(uuid);
             }
-            else
-            {
-                uuid=UUIDPlayerDB.getUUID(usernameoruuid);
-                if(uuid!=null)
-                {
-                    return getUser(uuid);
-                }
-            }
+//            else
+//            {
+//                uuid=UUIDPlayerDB.getUUID(usernameoruuid);
+//                if(uuid!=null)
+//                {
+//                    return getUser(uuid);
+//                }
+//            }
         }
         
 		for(User u:users)
@@ -319,7 +319,15 @@ public class PermissionsManager implements Listener,PluginMessageListener
 		}
         
         //load user from database
-        User u=backEnd.loadUser(usernameoruuid);
+        User u;
+        if(useUUIDs && uuid != null)
+        {
+            u=backEnd.loadUser(uuid);
+        }
+        else
+        {
+            u=backEnd.loadUser(usernameoruuid);
+        }
         if(u!=null)
         {
             users.add(u);
@@ -361,7 +369,14 @@ public class PermissionsManager implements Listener,PluginMessageListener
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void onLogin(PlayerLoginEvent e)
 	{
-        reloadUser(e.getPlayer().getUniqueId());
+        if(useUUIDs)
+        {
+            reloadUser(e.getPlayer().getUniqueId());
+        }
+        else
+        {
+            reloadUser(e.getPlayer().getName());
+        }
         
         //inject permissible
         Permissible permissible=new Permissible(e.getPlayer());
@@ -388,7 +403,15 @@ public class PermissionsManager implements Listener,PluginMessageListener
         //uninject permissible
         Injector.uninject(e.getPlayer());
         
-        User u=getUser(e.getPlayer().getUniqueId());
+        User u;
+        if(useUUIDs)
+        {
+            u=getUser(e.getPlayer().getUniqueId());
+        }
+        else
+        {
+            u=getUser(e.getPlayer().getName());
+        }
         users.remove(u);
 	}
     @EventHandler
