@@ -358,4 +358,15 @@ public class User
         
         return has;
     }
+    
+    public List<String> getGroupsString()
+    {
+        List<String> ret = new ArrayList<>();
+        for(Group g : groups)
+        {
+            ret.add(g.getName());
+        }
+        
+        return ret;
+    }
 }
