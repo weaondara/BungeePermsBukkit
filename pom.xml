@@ -25,17 +25,25 @@
     <properties>
     <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
   </properties>
+  
+  <repositories>
+  	<repository>
+        <id>spigot</id>
+        <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+  	</repository>
+  </repositories>
+  
   <dependencies>
     <dependency>
-      <groupId>org.bukkit</groupId>
-      <artifactId>spigot</artifactId>
-      <version>1.0</version>
-      <type>jar</type>
+    	<groupId>org.spigotmc</groupId>
+        <artifactId>spigot-api</artifactId>
+        <version>1.8-R0.1-SNAPSHOT</version>
+        <type>jar</type>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.12.2</version>
+      <version>1.16.0</version>
       <type>jar</type>
     </dependency>
   </dependencies>
