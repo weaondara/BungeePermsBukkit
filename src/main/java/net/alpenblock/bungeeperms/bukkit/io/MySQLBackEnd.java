@@ -17,6 +17,8 @@ import net.alpenblock.bungeeperms.bukkit.PermissionsManager;
 import net.alpenblock.bungeeperms.bukkit.Server;
 import net.alpenblock.bungeeperms.bukkit.User;
 import net.alpenblock.bungeeperms.bukkit.World;
+import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 public class MySQLBackEnd implements BackEnd
@@ -61,6 +63,8 @@ public class MySQLBackEnd implements BackEnd
     @Override
     public void load()
     {
+        Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "The MySQL backend is deprecated! Please consider to use MySQL2.");
+        
 		//load from table
 		permsconf.load();
     }
