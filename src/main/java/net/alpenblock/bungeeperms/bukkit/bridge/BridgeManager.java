@@ -10,6 +10,7 @@ import net.alpenblock.bungeeperms.bukkit.bridge.bridges.vault.VaultBridge;
 import net.alpenblock.bungeeperms.bukkit.bridge.bridges.worldedit.WorldEditBridge;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -64,17 +65,17 @@ public class BridgeManager implements Listener
             b.disable();
         }
     }
-    
+
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
     {
-        if(cmd.getName().equalsIgnoreCase("bungeepermsbukkitbridge"))
+        if (cmd.getName().equalsIgnoreCase("bungeepermsbukkitbridge"))
         {
-            if(!(sender instanceof ConsoleCommandSender))
+            if (!(sender instanceof ConsoleCommandSender))
             {
                 sender.sendMessage(ChatColor.DARK_RED + "Only console can do that!");
                 return true;
             }
-            if(args.length == 1 && args[0].equalsIgnoreCase("reload"))
+            if (args.length == 1 && args[0].equalsIgnoreCase("reload"))
             {
                 onDisable();
                 onEnable();
@@ -119,6 +120,15 @@ public class BridgeManager implements Listener
             catch (Exception ex)
             {
             }
+        }
+    }
+
+    @EventHandler
+    public void onPluginEnable2(PluginEnableEvent e)
+    {
+        if (e.getPlugin().getName().equalsIgnoreCase("BungeePermsBukkitBridge"))
+        {
+            Bukkit.getConsoleSender().sendMessage(Color.RED + "WARNING: Please remove BungeePermsBukkitBridge!!! It's now integrated in BungeePermsBukkit.");
         }
     }
 }
