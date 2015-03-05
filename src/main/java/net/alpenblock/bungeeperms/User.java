@@ -34,17 +34,17 @@ public class User
 
     public User(String name, UUID UUID, List<Group> groups, List<String> extraPerms, Map<String, List<String>> serverPerms, Map<String, Map<String, List<String>>> serverWorldPerms)
     {
+        cachedPerms = new HashMap<>();
+        checkResults = new HashMap<>();
+        serverCheckResults = new HashMap<>();
+        serverWorldCheckResults = new HashMap<>();
+
         this.name = name;
         this.UUID = UUID;
         this.groups = groups;
         this.extraPerms = extraPerms;
         this.serverPerms = serverPerms;
         this.serverWorldPerms = serverWorldPerms;
-
-        cachedPerms = new HashMap<>();
-        checkResults = new HashMap<>();
-        serverCheckResults = new HashMap<>();
-        serverWorldCheckResults = new HashMap<>();
     }
 
     public boolean hasPerm(String perm)
@@ -352,8 +352,8 @@ public class User
             {
                 if (l.size() == 1)
                 {
-                    List<String> effperms = calcEffectivePerms(server);
-                    cachedPerms.put(server.toLowerCase(), effperms);
+                    List<String> effperms = calcEffectivePerms(lserver);
+                    cachedPerms.put(lserver.toLowerCase(), effperms);
                 }
                 else if (l.size() == 2)
                 {
@@ -414,6 +414,64 @@ public class User
             }
         }
         return null;
+    }
+
+    public List<BPPermission> getPermsWithOrigin(String server, String world)
+    {
+        List<BPPermission> ret = new ArrayList<>();
+
+        //add groups' perms
+        for (Group g : groups)
+        {
+            ret.addAll(g.getPermsWithOrigin(server, world));
+        }
+
+        for (String s : extraPerms)
+        {
+            BPPermission perm = new BPPermission(s, name, false, null, null);
+            ret.add(perm);
+        }
+
+        //per server perms
+        for (Map.Entry<String, List<String>> srv : serverPerms.entrySet())
+        {
+            //check for server
+            if (server != null && !srv.getKey().equalsIgnoreCase(server))
+            {
+                continue;
+            }
+
+            List<String> perserverPerms = srv.getValue();
+            for (String s : perserverPerms)
+            {
+                BPPermission perm = new BPPermission(s, name, false, srv.getKey(), null);
+                ret.add(perm);
+
+                //per server world perms
+                Map<String, List<String>> worldperms = serverWorldPerms.get(srv.getKey());
+                if (worldperms == null)
+                {
+                    continue;
+                }
+                for (Map.Entry<String, List<String>> w : worldperms.entrySet())
+                {
+                    //check for world
+                    if (world != null && !w.getKey().equalsIgnoreCase(world))
+                    {
+                        continue;
+                    }
+
+                    List<String> perserverWorldPerms = w.getValue();
+                    for (String s2 : perserverWorldPerms)
+                    {
+                        BPPermission perm2 = new BPPermission(s2, name, false, srv.getKey(), w.getKey());
+                        ret.add(perm2);
+                    }
+                }
+            }
+        }
+
+        return ret;
     }
 
     public List<String> getGroupsString()

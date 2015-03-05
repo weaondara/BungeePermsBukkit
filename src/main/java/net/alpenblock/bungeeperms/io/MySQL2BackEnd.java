@@ -83,7 +83,7 @@ public class MySQL2BackEnd implements BackEnd
         List<String> users = adapter.getUsers();
         for (String u : users)
         {
-            User user = loadUser(u);
+            User user = BungeePerms.getInstance().getConfig().isUseUUIDs() ? loadUser(UUID.fromString(u)) : loadUser(u);
             ret.add(user);
         }
 
@@ -364,7 +364,7 @@ public class MySQL2BackEnd implements BackEnd
     @Override
     public boolean isUserInDatabase(User user)
     {
-        return adapter.isInBD(user.getName(), EntityType.User);
+        return adapter.isInBD(BungeePerms.getInstance().getConfig().isUseUUIDs() ? user.getUUID().toString() : user.getName(), EntityType.User);
     }
 
     @Override

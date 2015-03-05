@@ -14,7 +14,6 @@ import net.alpenblock.bungeeperms.Group;
 import net.alpenblock.bungeeperms.Server;
 import net.alpenblock.bungeeperms.User;
 import net.alpenblock.bungeeperms.World;
-
 import net.alpenblock.bungeeperms.platform.PlatformPlugin;
 
 public class YAMLBackEnd implements BackEnd
@@ -227,7 +226,7 @@ public class YAMLBackEnd implements BackEnd
     @Override
     public boolean isUserInDatabase(User user)
     {
-        return permsconf.keyExists("users." + user.getName());
+        return permsconf.keyExists("users." + (BungeePerms.getInstance().getConfig().isUseUUIDs() ? user.getUUID().toString() : user.getName()));
     }
 
     private void checkPermFile()

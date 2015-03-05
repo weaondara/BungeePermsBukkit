@@ -21,4 +21,3 @@ public class World
     private String prefix;
     private String suffix;
 }
-

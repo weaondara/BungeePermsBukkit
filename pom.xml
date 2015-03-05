@@ -62,5 +62,10 @@
             <version>1.0</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>com.mojang</groupId>
+            <artifactId>AccountsClient</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

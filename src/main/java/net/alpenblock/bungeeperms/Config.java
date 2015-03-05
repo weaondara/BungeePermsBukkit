@@ -3,9 +3,9 @@ package net.alpenblock.bungeeperms;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import net.alpenblock.bungeeperms.config.FileConfiguration;
+import net.alpenblock.bungeeperms.config.YamlConfiguration;
 import net.alpenblock.bungeeperms.platform.PlatformPlugin;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Config
 {
@@ -17,6 +17,14 @@ public class Config
     public Config(PlatformPlugin p, String path)
     {
         this.path = p.getPluginFolder() + path;
+        createFile();
+        fconfig = YamlConfiguration.loadConfiguration(new File(this.path));
+        allowsave = false;
+    }
+
+    public Config(String path)
+    {
+        this.path = path;
         createFile();
         fconfig = YamlConfiguration.loadConfiguration(new File(this.path));
         allowsave = false;

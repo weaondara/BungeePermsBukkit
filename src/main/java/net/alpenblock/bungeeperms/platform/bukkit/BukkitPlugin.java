@@ -13,6 +13,7 @@ import net.alpenblock.bungeeperms.Config;
 import net.alpenblock.bungeeperms.platform.bukkit.bridge.BridgeManager;
 import net.alpenblock.bungeeperms.platform.Sender;
 import net.alpenblock.bungeeperms.platform.PlatformPlugin;
+import net.alpenblock.bungeeperms.platform.PlatformType;
 import net.alpenblock.bungeeperms.platform.PluginMessageSender;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -36,6 +37,8 @@ public class BukkitPlugin extends JavaPlugin implements PlatformPlugin
     private PluginMessageSender pmsender;
 
     private BungeePerms bungeeperms;
+    
+    private final PlatformType platformType = PlatformType.Bukkit;
 
     //platform extra things
     @Getter

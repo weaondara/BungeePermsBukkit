@@ -32,7 +32,6 @@ public class BungeePerms
 
     private boolean enabled;
 
-    //todo: better integration
     public BungeePerms(PlatformPlugin plugin, BPConfig config, PluginMessageSender pluginMessageSender, NetworkNotifier networkNotifier, EventListener eventListener)
     {
         //static
@@ -79,7 +78,7 @@ public class BungeePerms
             return;
         }
         enabled = false;
-        
+
         logger.info("Deactivating BungeePerms ...");
         eventListener.disable();
         permissionsManager.disable();
@@ -90,6 +89,7 @@ public class BungeePerms
         disable();
         load();
         permissionsManager.reload();
+        networkNotifier.reloadAll();
         enable();
     }
 }

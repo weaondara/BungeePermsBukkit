@@ -243,7 +243,7 @@ public class MySQLBackEnd implements BackEnd
     @Override
     public boolean isUserInDatabase(User user)
     {
-        return permsconf.keyExists("users." + user.getName());
+        return permsconf.keyExists("users." + (BungeePerms.getInstance().getConfig().isUseUUIDs() ? user.getUUID().toString() : user.getName()));
     }
 
     @Override

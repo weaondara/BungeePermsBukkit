@@ -23,4 +23,3 @@ public class Server
     private String prefix;
     private String suffix;
 }
-

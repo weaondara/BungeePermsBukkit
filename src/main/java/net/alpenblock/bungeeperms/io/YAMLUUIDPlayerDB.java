@@ -14,7 +14,7 @@ public class YAMLUUIDPlayerDB implements UUIDPlayerDB
 
     public YAMLUUIDPlayerDB()
     {
-        uuidconf = new Config(BungeePerms.getInstance().getPlugin(), "uuidplayerdb.yml");
+        uuidconf = new Config(BungeePerms.getInstance().getPlugin(), "/uuidplayerdb.yml");
         uuidconf.load();
     }
 
@@ -67,7 +67,7 @@ public class YAMLUUIDPlayerDB implements UUIDPlayerDB
                 uuidconf.deleteNode(suuid);
             }
         }
-        uuidconf.setString(uuid.toString(), player);
+        uuidconf.setStringAndSave(uuid.toString(), player);
     }
 
     @Override

@@ -72,7 +72,7 @@ public class Statics
         return l;
     }
 
-    public static boolean argAlias(String arg, String[] aliases)
+    public static boolean argAlias(String arg, String... aliases)
     {
         for (int i = 0; i < aliases.length; i++)
         {
@@ -183,6 +183,36 @@ public class Statics
         }
 
         return null;
+    }
+
+    public static boolean matchArgs(Sender sender, String[] args, int length)
+    {
+        if (args.length > length)
+        {
+            Messages.sendTooManyArgsMessage(sender);
+            return false;
+        }
+        else if (args.length < length)
+        {
+            Messages.sendTooLessArgsMessage(sender);
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean matchArgs(Sender sender, String[] args, int min, int max)
+    {
+        if (args.length > max)
+        {
+            Messages.sendTooManyArgsMessage(sender);
+            return false;
+        }
+        else if (args.length < min)
+        {
+            Messages.sendTooLessArgsMessage(sender);
+            return false;
+        }
+        return true;
     }
 
     @SneakyThrows

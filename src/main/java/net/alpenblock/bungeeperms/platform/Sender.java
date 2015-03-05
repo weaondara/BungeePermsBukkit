@@ -18,6 +18,6 @@ public interface Sender
     public boolean isConsole();
 
     public boolean isPlayer();
-    
+
     public boolean isOperator();
 }
